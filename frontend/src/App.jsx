@@ -14,26 +14,22 @@ export default function App() {
 
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>Focus — Concentration App</Typography>
-          {token ? (
-            <>
-              <Button color="inherit" component={Link} to="/calendar">Calendar</Button>
-              <Button color="inherit" component={Link} to="/tasks">Tasks</Button>
-              <Button color="inherit" component={Link} to="/analytics">Analytics</Button>
-              <Button color="inherit" onClick={logout}>Logout</Button>
-            </>
-          ) : (
-            <>
-              <Button color="inherit" component={Link} to="/login">Login</Button>
-              <Button color="inherit" component={Link} to="/signup">Sign Up</Button>
-            </>
-          )}
-        </Toolbar>
-      </AppBar>
+      {token && (
+        <AppBar position="static" sx={{ mb: 2 }}>
+          <Toolbar sx={{ display: "flex", gap: 2 }}>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+              Focus Productivity App
+            </Typography>
 
-      <main style={{ padding: 20 }}>
+            <Button color="inherit" component={Link} to="/calendar">Calendar</Button>
+            <Button color="inherit" component={Link} to="/tasks">Tasks</Button>
+            <Button color="inherit" component={Link} to="/analytics">Analytics</Button>
+            <Button color="inherit" onClick={logout}>Logout</Button>
+          </Toolbar>
+        </AppBar>
+      )}
+
+      <main style={{ padding: 10 }}>
         <Outlet />
       </main>
     </>

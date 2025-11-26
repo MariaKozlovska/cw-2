@@ -1,50 +1,81 @@
-import React, { useEffect, useState } from 'react';
-import axios from '../utils/axiosInstance';
-import API_PATHS from '../utils/apiPaths';
-import { Container, Paper, Typography, List, ListItem, ListItemText } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import axios from "../utils/axiosInstance";
+import API_PATHS from "../utils/apiPaths";
+
+import {
+  PieChart, Pie, Cell,
+  BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
+  LineChart, Line,
+  ResponsiveContainer
+} from "recharts";
 
 export default function AnalyticsPage() {
   const [data, setData] = useState(null);
-  const [month, setMonth] = useState(''); // format YYYY-MM
 
-  const fetch = async () => {
-    try {
-      const url = month ? `${API_PATHS.TASKS.ANALYTICS}?month=${month}` : API_PATHS.TASKS.ANALYTICS;
-      const res = await axios.get(url);
-      setData(res.data);
-    } catch (err) { console.error(err); }
+  const load = async () => {
+    const res = await axios.get(API_PATHS.TASKS.ANALYTICS);
+    setData(res.data);
   };
 
-  useEffect(() => { fetch(); }, [month]);
+  useEffect(() => {
+    load();
+  }, []);
+
+  if (!data) return <p>Loading...</p>;
+
+  // ---------- Pie chart (by status) ----------
+  const statusData = Object.entries(data.byStatus).map(([status, count]) => ({
+    name: status,
+    value: count,
+  }));
+
+  const COLORS = ["#4caf50", "#ff9800", "#f44336"];
+
+  // ---------- Priority Chart ----------
+  const priorityCount = { Low: 0, Medium: 0, High: 0 };
+  data.tasks?.forEach(t => priorityCount[t.priority]++);
+
+  const priorityData = Object.entries(priorityCount).map(([k, v]) => ({
+    name: k,
+    value: v
+  }));
 
   return (
-    <Container maxWidth="md">
-      <Paper sx={{ p: 2 }}>
-        <Typography variant="h6">Analytics</Typography>
-        <Typography variant="body2" sx={{ my: 1 }}>Select month (optional):</Typography>
-        <input type="month" value={month} onChange={e => setMonth(e.target.value)} />
-        <button onClick={fetch}>Refresh</button>
+    <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <h2>Analytics Dashboard</h2>
+      <p>Total tasks: {data.total}</p>
 
-        {data && (
-          <>
-            <Typography sx={{ mt: 2 }}>Total tasks: {data.total}</Typography>
+      {/* --- STATUS PIE CHART --- */}
+      <h3>Tasks by Status</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie 
+            dataKey="value" 
+            data={statusData} 
+            label 
+            outerRadius={120}
+          >
+            {statusData.map((entry, index) => (
+              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip />
+        </PieChart>
+      </ResponsiveContainer>
 
-            <Typography sx={{ mt: 1 }}>By status:</Typography>
-            <List>
-              {Object.entries(data.byStatus || {}).map(([k,v]) => (
-                <ListItem key={k}><ListItemText primary={`${k}: ${v}`} /></ListItem>
-              ))}
-            </List>
+      {/* --- TASKS BY PRIORITY --- */}
+      <h3>Tasks by Priority</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={priorityData}>
+          <XAxis dataKey="name" />
+          <YAxis allowDecimals={false} />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#3f51b5" />
+        </BarChart>
+      </ResponsiveContainer>
 
-            <Typography sx={{ mt: 1 }}>Stages summary:</Typography>
-            <List>
-              {Object.entries(data.stages || {}).map(([name, info]) => (
-                <ListItem key={name}><ListItemText primary={`${name}: ${info.completed} / ${info.total} completed`} /></ListItem>
-              ))}
-            </List>
-          </>
-        )}
-      </Paper>
-    </Container>
+      {/* --- ADD MORE CHARTS LATER --- */}
+    </div>
   );
 }

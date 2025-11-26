@@ -40,3 +40,71 @@
     margin-top: 5px;
   }
   
+  .calendar {
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+    font-size: 24px;
+  }
+  
+  .col-center {
+    text-align: center;
+  }
+  
+  .days {
+    display: flex;
+  }
+  
+  .body .row {
+    display: flex;
+  }
+  
+  .col {
+    flex: 1;
+    border: 1px solid #eee;
+    min-height: 110px;
+    padding: 4px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .col.disabled {
+    background: #f7f7f7;
+    color: #ccc;
+  }
+  
+  .col.selected {
+    background: #e3f2fd;
+  }
+  
+  .number {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-weight: bold;
+  }
+  
+  .tasks-preview {
+    margin-top: 22px;
+  }
+  
+  .task-chip {
+    padding: 3px 5px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: transform 0.1s ease-in;
+  }
+  
+  .task-chip:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 4px #999;
+  }
+  
