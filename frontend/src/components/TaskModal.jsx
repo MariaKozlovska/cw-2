@@ -1,9 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  Dialog, DialogTitle, DialogContent,
-  TextField, DialogActions, Button,
-  Typography, MenuItem, Grid
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Button,
+  Typography,
+  MenuItem,
+  Grid,
+  Box   
 } from "@mui/material";
+
 
 import axios from "../utils/axiosInstance";
 import API_PATHS from "../utils/apiPaths";
@@ -22,7 +30,67 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
   const [stagesText, setStagesText] = useState("");
   const [err, setErr] = useState("");
 
-  // 🔹 Формування дати без UTC
+  // -------------------------
+  //     TIMER SYSTEM
+  // -------------------------
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+  const intervalRef = useRef(null);
+
+  const startTimer = () => {
+    if (timerRunning) return;
+    setTimerRunning(true);
+    intervalRef.current = setInterval(() => {
+      setTimerSeconds((s) => s + 1);
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (!timerRunning) return;
+    setTimerRunning(false);
+    clearInterval(intervalRef.current);
+
+    // convert seconds → minutes
+    const minutesSpent = Math.round(timerSeconds / 60);
+
+    // merge with existing spent time
+    setMinutes((prev) => {
+      return Number(prev || 0);
+    });
+
+    saveTimeToTask(minutesSpent);
+  };
+
+  const resetTimer = () => {
+    setTimerSeconds(0);
+    setTimerRunning(false);
+    clearInterval(intervalRef.current);
+  };
+
+  const saveTimeToTask = async (minutesSpent) => {
+    if (!editingTask || !editingTask.id) return;
+
+    try {
+      await axios.put(`${API_PATHS.TASKS.BASE}/${editingTask.id}`, {
+        spentTimeMinutes: (editingTask.spentTimeMinutes || 0) + minutesSpent,
+      });
+
+      onSaved?.();
+    } catch (err) {
+      console.error("SAVE TIME ERROR:", err);
+    }
+  };
+
+  // Display timer as MM:SS
+  const formatTimer = () => {
+    const m = Math.floor(timerSeconds / 60);
+    const s = timerSeconds % 60;
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  };
+
+  // -------------------------
+  // FORMAT DATE TO yyyy-mm-dd
+  // -------------------------
   const formatDate = (d) => {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -30,7 +98,9 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
     return `${year}-${month}-${day}`;
   };
 
-  // 🔹 Заповнення форми при редагуванні
+  // -------------------------
+  // LOAD FOR EDIT
+  // -------------------------
   useEffect(() => {
     if (editingTask) {
       setTitle(editingTask.title || "");
@@ -54,6 +124,8 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
       setStatus("Pending");
       setStagesText("");
     }
+
+    resetTimer();
   }, [editingTask, open]);
 
   const parseStages = (text) =>
@@ -68,6 +140,9 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
       })
       .filter(Boolean);
 
+  // -------------------------
+  // SAVE TASK
+  // -------------------------
   const save = async () => {
     setErr("");
 
@@ -109,17 +184,6 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
     }
   };
 
-  const deleteTask = async () => {
-    try {
-      await axios.delete(`${API_PATHS.TASKS.BASE}/${editingTask.id}`);
-      onSaved?.();
-      onClose();
-    } catch (e) {
-      console.log("DELETE ERROR:", e);
-      setErr("Error deleting task");
-    }
-  };
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <DialogTitle>{editingTask ? "Edit Task" : "Create Task"}</DialogTitle>
@@ -127,6 +191,7 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
       <DialogContent>
         {err && <Typography color="error">{err}</Typography>}
 
+        {/* BASIC INPUTS */}
         <TextField fullWidth label="Title" margin="normal"
           value={title} onChange={(e) => setTitle(e.target.value)} />
 
@@ -141,6 +206,37 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
           InputLabelProps={{ shrink: true }}
         />
 
+        {/* TIMER SECTION */}
+        {editingTask && (
+          <Box sx={{ mt: 2, p: 2, border: "1px solid #ddd", borderRadius: 2 }}>
+            <Typography sx={{ mb: 1 }}>
+              ⏱ Time Spent: <b>{formatTimer()}</b>
+            </Typography>
+
+            <Button
+              variant="contained"
+              color={timerRunning ? "error" : "success"}
+              onClick={timerRunning ? stopTimer : startTimer}
+              sx={{ mr: 1 }}
+            >
+              {timerRunning ? "Stop" : "Start"}
+            </Button>
+
+            <Button
+              variant="outlined"
+              onClick={resetTimer}
+              disabled={timerRunning}
+            >
+              Reset
+            </Button>
+
+            <Typography sx={{ mt: 2, fontSize: "14px" }}>
+              Total saved time: <b>{editingTask.spentTimeMinutes || 0} min</b>
+            </Typography>
+          </Box>
+        )}
+
+        {/* TIME INPUT */}
         <Grid container spacing={2} sx={{ mt: 1 }}>
           <Grid item xs={6}>
             <TextField fullWidth label="Hours" type="number"
@@ -152,6 +248,7 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
           </Grid>
         </Grid>
 
+        {/* OTHER FIELDS */}
         <TextField fullWidth select margin="normal"
           label="Priority" value={priority}
           onChange={(e) => setPriority(e.target.value)}>
@@ -167,26 +264,24 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
           <MenuItem value="In Progress">In Progress</MenuItem>
           <MenuItem value="Completed">Completed</MenuItem>
         </TextField>
-
-        <TextField
-          fullWidth multiline minRows={3}
-          label="Stages (one per line, [x] = completed)"
-          margin="normal"
-          value={stagesText}
-          onChange={(e) => setStagesText(e.target.value)}
-        />
       </DialogContent>
 
       <DialogActions>
-        {/* DELETE BUTTON ONLY IN EDIT MODE */}
+        {/* DELETE */}
         {editingTask && editingTask.id && (
-          <Button color="error" onClick={deleteTask}>
+          <Button
+            color="error"
+            onClick={async () => {
+              await axios.delete(`${API_PATHS.TASKS.BASE}/${editingTask.id}`);
+              onSaved?.();
+              onClose();
+            }}
+          >
             Delete
           </Button>
         )}
 
         <Button onClick={onClose}>Cancel</Button>
-
         <Button variant="contained" onClick={save}>
           {editingTask ? "Save" : "Add"}
         </Button>
