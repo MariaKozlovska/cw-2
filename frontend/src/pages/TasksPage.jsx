@@ -8,11 +8,13 @@ import {
   FormControl,
   Select,
   InputLabel,
+  IconButton
 } from "@mui/material";
 
 import axios from "../utils/axiosInstance";
 import API_PATHS from "../utils/apiPaths";
 import TaskModal from "../components/TaskModal";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([]);
@@ -26,7 +28,7 @@ export default function TasksPage() {
       const res = await axios.get(API_PATHS.TASKS.BASE);
       setTasks(res.data);
     } catch (err) {
-      console.error("TASKS LOAD ERROR:", err);
+      console.error("TASK LOAD ERROR:", err);
     }
   };
 
@@ -34,7 +36,6 @@ export default function TasksPage() {
     loadTasks();
   }, []);
 
-  // ----- SORTING -----
   const sortedTasks = [...tasks].sort((a, b) => {
     if (sortType === "deadline") {
       return (a.deadline || "").localeCompare(b.deadline || "");
@@ -50,7 +51,6 @@ export default function TasksPage() {
     return 0;
   });
 
-  // ----- UPDATE STATUS -----
   const updateStatus = async (task, newStatus) => {
     try {
       await axios.put(`${API_PATHS.TASKS.BASE}/${task.id}`, {
@@ -58,33 +58,36 @@ export default function TasksPage() {
         status: newStatus,
       });
       loadTasks();
-    } catch (err) {
-      console.error("STATUS UPDATE ERROR:", err);
+    } catch (error) {
+      console.error("STATUS UPDATE ERROR:", error);
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Pending":
-        return "#fff4cc";
-      case "In Progress":
-        return "#cfe2ff";
-      case "Completed":
-        return "#d4f8d4";
-      default:
-        return "white";
+  const deleteTask = async (taskId) => {
+    try {
+      await axios.delete(`${API_PATHS.TASKS.BASE}/${taskId}`);
+      loadTasks();
+    } catch (err) {
+      console.error("DELETE ERROR:", err);
     }
   };
+
+  const statusColor = (s) =>
+    s === "Pending"
+      ? "#fff6cc"
+      : s === "In Progress"
+      ? "#e0edff"
+      : "#d7f8d7";
 
   return (
-    <Box sx={{ maxWidth: 850, mx: "auto", mt: 3 }}>
+    <Box sx={{ maxWidth: 650, mx: "auto", mt: 3 }}>
       <Typography variant="h4" sx={{ mb: 3 }}>
         Tasks
       </Typography>
 
-      {/* SORTING BAR */}
-      <Box sx={{ mb: 3, display: "flex", gap: 2 }}>
-        <FormControl size="small" sx={{ minWidth: 180 }}>
+      {/* SORTING */}
+      <Box sx={{ mb: 2, display: "flex", gap: 2 }}>
+        <FormControl size="small" sx={{ minWidth: 160 }}>
           <InputLabel>Sort By</InputLabel>
           <Select
             value={sortType}
@@ -99,19 +102,18 @@ export default function TasksPage() {
       </Box>
 
       {/* TASK LIST */}
-      {sortedTasks.length === 0 && (
-        <Typography>No tasks yet.</Typography>
-      )}
-
       {sortedTasks.map((task) => (
         <Paper
           key={task.id}
           sx={{
-            p: 2,
-            mb: 2,
-            backgroundColor: getStatusColor(task.status),
-            borderLeft: "6px solid #555",
+            p: 1.5,
+            mb: 1.5,
+            backgroundColor: statusColor(task.status),
+            borderLeft: "5px solid #777",
             cursor: "pointer",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             transition: "0.2s",
             "&:hover": { transform: "scale(1.01)" },
           }}
@@ -120,27 +122,25 @@ export default function TasksPage() {
             setModalOpen(true);
           }}
         >
-          <Typography variant="h6">{task.title}</Typography>
+          <Box sx={{ width: "80%" }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+              {task.title}
+            </Typography>
 
-          <Typography sx={{ mt: 1 }}>
-            <strong>Deadline:</strong> {task.deadline}
-          </Typography>
+            <Typography sx={{ fontSize: "13px", mt: 0.3 }}>
+              Deadline: {task.deadline}
+            </Typography>
 
-          <Typography sx={{ mt: 1 }}>
-            <strong>Description:</strong> {task.description || "(none)"}
-          </Typography>
+            <Typography sx={{ fontSize: "13px", mt: 0.3 }}>
+              Priority: {task.priority}
+            </Typography>
 
-          <Typography sx={{ mt: 1 }}>
-            <strong>Priority:</strong> {task.priority}
-          </Typography>
-
-          {/* STATUS SELECT */}
-          <Box sx={{ mt: 2, maxWidth: 160 }}>
             <TextField
               select
+              size="small"
               label="Status"
               value={task.status}
-              size="small"
+              sx={{ mt: 1, width: 140 }}
               onClick={(e) => e.stopPropagation()}
               onChange={(e) => updateStatus(task, e.target.value)}
             >
@@ -149,15 +149,28 @@ export default function TasksPage() {
               <MenuItem value="Completed">Completed</MenuItem>
             </TextField>
           </Box>
+
+          {/* DELETE BUTTON */}
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteTask(task.id);
+            }}
+            color="error"
+          >
+            <DeleteIcon />
+          </IconButton>
         </Paper>
       ))}
 
-      {/* EDIT MODAL */}
+      {/* MODAL FOR EDIT */}
       <TaskModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         editingTask={editingTask}
-        date={editingTask ? new Date(editingTask.date) : new Date()}
+        date={
+          editingTask ? new Date(editingTask.date) : new Date()
+        }
         onSaved={loadTasks}
       />
     </Box>

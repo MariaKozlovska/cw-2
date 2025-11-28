@@ -22,7 +22,7 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
   const [stagesText, setStagesText] = useState("");
   const [err, setErr] = useState("");
 
-  // 🔹 Функція формування дати без UTC
+  // 🔹 Формування дати без UTC
   const formatDate = (d) => {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -30,7 +30,7 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
     return `${year}-${month}-${day}`;
   };
 
-  // 🔹 Заповнюємо форму при редагуванні
+  // 🔹 Заповнення форми при редагуванні
   useEffect(() => {
     if (editingTask) {
       setTitle(editingTask.title || "");
@@ -75,7 +75,6 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
     if (!deadline) return setErr("Deadline required");
     if (!date) return setErr("Internal date error");
 
-    // ❗️ Тепер правильно формуємо дату
     const selectedDate = formatDate(date);
 
     const h = Number(hours || 0);
@@ -107,6 +106,17 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
     } catch (e) {
       console.log("SAVE ERROR:", e);
       setErr(e?.response?.data?.message || "Error saving task");
+    }
+  };
+
+  const deleteTask = async () => {
+    try {
+      await axios.delete(`${API_PATHS.TASKS.BASE}/${editingTask.id}`);
+      onSaved?.();
+      onClose();
+    } catch (e) {
+      console.log("DELETE ERROR:", e);
+      setErr("Error deleting task");
     }
   };
 
@@ -168,7 +178,15 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
       </DialogContent>
 
       <DialogActions>
+        {/* DELETE BUTTON ONLY IN EDIT MODE */}
+        {editingTask && editingTask.id && (
+          <Button color="error" onClick={deleteTask}>
+            Delete
+          </Button>
+        )}
+
         <Button onClick={onClose}>Cancel</Button>
+
         <Button variant="contained" onClick={save}>
           {editingTask ? "Save" : "Add"}
         </Button>
