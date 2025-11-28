@@ -36,21 +36,62 @@ export default function TasksPage() {
     loadTasks();
   }, []);
 
-  const sortedTasks = [...tasks].sort((a, b) => {
-    if (sortType === "deadline") {
-      return (a.deadline || "").localeCompare(b.deadline || "");
-    }
-    if (sortType === "priority") {
-      const order = { High: 1, Medium: 2, Low: 3 };
-      return order[a.priority] - order[b.priority];
-    }
-    if (sortType === "status") {
-      const order = { Pending: 1, "In Progress": 2, Completed: 3 };
-      return order[a.status] - order[b.status];
-    }
-    return 0;
-  });
+  // ------------------------------
+  // 🔹 Місячні фільтри
+  // ------------------------------
+  const filterByMonth = (task) => {
+    if (!task.deadline) return false;
 
+    const d = new Date(task.deadline);
+    const now = new Date();
+
+    const tMonth = d.getMonth();
+    const tYear = d.getFullYear();
+    const cMonth = now.getMonth();
+    const cYear = now.getFullYear();
+
+    if (sortType === "month_this") {
+      return tMonth === cMonth && tYear === cYear;
+    }
+
+    if (sortType === "month_prev") {
+      const prevMonth = cMonth === 0 ? 11 : cMonth - 1;
+      const prevYear = cMonth === 0 ? cYear - 1 : cYear;
+      return tMonth === prevMonth && tYear === prevYear;
+    }
+
+    if (sortType === "month_next") {
+      const nextMonth = cMonth === 11 ? 0 : cMonth + 1;
+      const nextYear = cMonth === 11 ? cYear + 1 : cYear;
+      return tMonth === nextMonth && tYear === nextYear;
+    }
+
+    return true;
+  };
+
+  // ------------------------------
+  // 🔹 Сортування
+  // ------------------------------
+  const sortedTasks = [...tasks]
+    .filter(filterByMonth)
+    .sort((a, b) => {
+      if (sortType === "deadline") {
+        return (a.deadline || "").localeCompare(b.deadline || "");
+      }
+      if (sortType === "priority") {
+        const order = { High: 1, Medium: 2, Low: 3 };
+        return order[a.priority] - order[b.priority];
+      }
+      if (sortType === "status") {
+        const order = { Pending: 1, "In Progress": 2, Completed: 3 };
+        return order[a.status] - order[b.status];
+      }
+      return 0;
+    });
+
+  // ------------------------------
+  // 🔹 Оновлення статусу
+  // ------------------------------
   const updateStatus = async (task, newStatus) => {
     try {
       await axios.put(`${API_PATHS.TASKS.BASE}/${task.id}`, {
@@ -63,6 +104,9 @@ export default function TasksPage() {
     }
   };
 
+  // ------------------------------
+  // 🔹 Видалення
+  // ------------------------------
   const deleteTask = async (taskId) => {
     try {
       await axios.delete(`${API_PATHS.TASKS.BASE}/${taskId}`);
@@ -72,6 +116,9 @@ export default function TasksPage() {
     }
   };
 
+  // ------------------------------
+  // 🔹 Кольори статусів
+  // ------------------------------
   const statusColor = (s) =>
     s === "Pending"
       ? "#fff6cc"
@@ -80,23 +127,26 @@ export default function TasksPage() {
       : "#d7f8d7";
 
   return (
-    <Box sx={{ maxWidth: 650, mx: "auto", mt: 3 }}>
+    <Box sx={{ maxWidth: 580, mx: "auto", mt: 3 }}>
       <Typography variant="h4" sx={{ mb: 3 }}>
         Tasks
       </Typography>
 
       {/* SORTING */}
       <Box sx={{ mb: 2, display: "flex", gap: 2 }}>
-        <FormControl size="small" sx={{ minWidth: 160 }}>
-          <InputLabel>Sort By</InputLabel>
+        <FormControl size="small" sx={{ minWidth: 180 }}>
+          <InputLabel>Sort / Filter By</InputLabel>
           <Select
             value={sortType}
-            label="Sort By"
+            label="Sort / Filter By"
             onChange={(e) => setSortType(e.target.value)}
           >
             <MenuItem value="deadline">Deadline</MenuItem>
             <MenuItem value="priority">Priority</MenuItem>
             <MenuItem value="status">Status</MenuItem>
+            <MenuItem value="month_this">This Month</MenuItem>
+            <MenuItem value="month_prev">Previous Month</MenuItem>
+            <MenuItem value="month_next">Next Month</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -106,8 +156,8 @@ export default function TasksPage() {
         <Paper
           key={task.id}
           sx={{
-            p: 1.5,
-            mb: 1.5,
+            p: 1.3,
+            mb: 1.3,
             backgroundColor: statusColor(task.status),
             borderLeft: "5px solid #777",
             cursor: "pointer",
@@ -116,13 +166,14 @@ export default function TasksPage() {
             alignItems: "center",
             transition: "0.2s",
             "&:hover": { transform: "scale(1.01)" },
+            width: "100%"
           }}
           onClick={() => {
             setEditingTask(task);
             setModalOpen(true);
           }}
         >
-          <Box sx={{ width: "80%" }}>
+          <Box sx={{ width: "75%" }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {task.title}
             </Typography>
@@ -140,7 +191,7 @@ export default function TasksPage() {
               size="small"
               label="Status"
               value={task.status}
-              sx={{ mt: 1, width: 140 }}
+              sx={{ mt: 1, width: 135 }}
               onClick={(e) => e.stopPropagation()}
               onChange={(e) => updateStatus(task, e.target.value)}
             >
@@ -163,14 +214,12 @@ export default function TasksPage() {
         </Paper>
       ))}
 
-      {/* MODAL FOR EDIT */}
+      {/* MODAL */}
       <TaskModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         editingTask={editingTask}
-        date={
-          editingTask ? new Date(editingTask.date) : new Date()
-        }
+        date={editingTask ? new Date(editingTask.date) : new Date()}
         onSaved={loadTasks}
       />
     </Box>
