@@ -1,5 +1,8 @@
 const db = require("../db");
 
+/* ================================
+   GET ALL TASKS
+================================ */
 exports.getTasks = async (req, res) => {
   try {
     const tasks = await db.allAsync(
@@ -14,6 +17,9 @@ exports.getTasks = async (req, res) => {
   }
 };
 
+/* ================================
+   CREATE TASK
+================================ */
 exports.createTask = async (req, res) => {
   try {
     const {
@@ -23,9 +29,11 @@ exports.createTask = async (req, res) => {
       deadline,
       priority,
       status,
+      stages,
       expectedTimeHours,
       expectedTimeMinutes,
-      expectedTimeDecimal
+      expectedTimeDecimal,
+      spentTimeSeconds = 0    // ← додаємо підтримку
     } = req.body;
 
     if (!title || !date || !deadline)
@@ -35,10 +43,8 @@ exports.createTask = async (req, res) => {
 
     const result = await db.runAsync(
       `INSERT INTO tasks 
-      (userId, title, description, date, deadline, priority, status,
-       expectedTimeHours, expectedTimeMinutes, expectedTimeDecimal,
-       createdAt, updatedAt)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (userId, title, description, date, deadline, priority, status, expectedTimeHours, expectedTimeMinutes, expectedTimeDecimal, spentTimeSeconds, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         req.user.id,
         title,
@@ -50,6 +56,7 @@ exports.createTask = async (req, res) => {
         expectedTimeHours || 0,
         expectedTimeMinutes || 0,
         expectedTimeDecimal || 0,
+        spentTimeSeconds || 0,     // ← записуємо в БД
         now,
         now
       ]
@@ -68,17 +75,27 @@ exports.createTask = async (req, res) => {
   }
 };
 
+/* ================================
+   UPDATE TASK
+================================ */
 exports.updateTask = async (req, res) => {
   try {
     const id = req.params.id;
-
     const updates = req.body;
     const now = new Date().toISOString();
 
     await db.runAsync(
       `UPDATE tasks SET
-        title = ?, description = ?, date = ?, deadline = ?, priority = ?, status = ?,
-        expectedTimeHours = ?, expectedTimeMinutes = ?, expectedTimeDecimal = ?,
+        title = ?, 
+        description = ?, 
+        date = ?, 
+        deadline = ?, 
+        priority = ?, 
+        status = ?,
+        expectedTimeHours = ?, 
+        expectedTimeMinutes = ?, 
+        expectedTimeDecimal = ?,
+        spentTimeSeconds = ?,     -- ← додаємо update
         updatedAt = ?
       WHERE id = ? AND userId = ?`,
       [
@@ -91,6 +108,7 @@ exports.updateTask = async (req, res) => {
         updates.expectedTimeHours,
         updates.expectedTimeMinutes,
         updates.expectedTimeDecimal,
+        updates.spentTimeSeconds || 0,  // ← зберігаємо час
         now,
         id,
         req.user.id
@@ -110,6 +128,9 @@ exports.updateTask = async (req, res) => {
   }
 };
 
+/* ================================
+   DELETE TASK
+================================ */
 exports.deleteTask = async (req, res) => {
   try {
     await db.runAsync(
@@ -124,22 +145,37 @@ exports.deleteTask = async (req, res) => {
   }
 };
 
+/* ================================
+   ANALYTICS
+   (тепер показує totalSpentSeconds)
+================================ */
 exports.analytics = async (req, res) => {
   try {
     const tasks = await db.allAsync(
-      "SELECT * FROM tasks WHERE userId = ?", 
+      "SELECT * FROM tasks WHERE userId = ?",
       [req.user.id]
     );
 
     const stats = {
       total: tasks.length,
+      totalSpentSeconds: 0,     // ← загальний витрачений час
       byStatus: { Pending: 0, "In Progress": 0, Completed: 0 },
-      byPriority: { Low: 0, Medium: 0, High: 0 }
+      byPriority: {
+        Low: { count: 0, time: 0 },
+        Medium: { count: 0, time: 0 },
+        High: { count: 0, time: 0 }
+      }
     };
 
-    tasks.forEach(t => {
+    tasks.forEach((t) => {
+      // Лічильники
       stats.byStatus[t.status]++;
-      stats.byPriority[t.priority]++;
+      stats.byPriority[t.priority].count++;
+
+      // Час
+      const sec = t.spentTimeSeconds || 0;
+      stats.totalSpentSeconds += sec;
+      stats.byPriority[t.priority].time += sec;
     });
 
     res.json(stats);
