@@ -1,81 +1,200 @@
 import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+  Paper,
+} from "@mui/material";
+
 import axios from "../utils/axiosInstance";
 import API_PATHS from "../utils/apiPaths";
 
 import {
-  PieChart, Pie, Cell,
-  BarChart, Bar, XAxis, YAxis, Tooltip, Legend,
-  LineChart, Line,
-  ResponsiveContainer
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  BarChart,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Bar,
+  LineChart,
+  Line,
+  ResponsiveContainer,
 } from "recharts";
 
-export default function AnalyticsPage() {
-  const [data, setData] = useState(null);
+// Colors for priorities
+const COLORS = {
+  High: "#ff6b6b",
+  Medium: "#f7c948",
+  Low: "#51cf66",
+};
 
-  const load = async () => {
-    const res = await axios.get(API_PATHS.TASKS.ANALYTICS);
-    setData(res.data);
+// Convert seconds to "1h 23m 10s"
+const formatTime = (sec) => {
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+
+  return `${h}h ${m}m ${s}s`;
+};
+
+export default function AnalyticsPage() {
+  const [tasks, setTasks] = useState([]);
+  const [period, setPeriod] = useState("week");
+
+  const loadTasks = async () => {
+    try {
+      const res = await axios.get(API_PATHS.TASKS.BASE);
+      setTasks(res.data);
+    } catch (error) {
+      console.error("ANALYTICS LOAD ERROR:", error);
+    }
   };
 
   useEffect(() => {
-    load();
+    loadTasks();
   }, []);
 
-  if (!data) return <p>Loading...</p>;
+  // Filter tasks by chosen period
+  const filterByPeriod = () => {
+    const now = new Date();
 
-  // ---------- Pie chart (by status) ----------
-  const statusData = Object.entries(data.byStatus).map(([status, count]) => ({
-    name: status,
-    value: count,
+    return tasks.filter((t) => {
+      const d = new Date(t.date);
+      const diff = now - d;
+
+      switch (period) {
+        case "day":
+          return d.toDateString() === now.toDateString();
+        case "week":
+          return diff <= 7 * 24 * 60 * 60 * 1000;
+        case "month":
+          return (
+            d.getMonth() === now.getMonth() &&
+            d.getFullYear() === now.getFullYear()
+          );
+        case "year":
+          return d.getFullYear() === now.getFullYear();
+        default:
+          return true;
+      }
+    });
+  };
+
+  const filtered = filterByPeriod();
+
+  // Calculate seconds by priority
+  const timeByPriority = filtered.reduce(
+    (acc, t) => {
+      acc[t.priority] += t.spentTimeSeconds || 0;
+      return acc;
+    },
+    { High: 0, Medium: 0, Low: 0 }
+  );
+
+  const totalSeconds =
+    timeByPriority.High + timeByPriority.Medium + timeByPriority.Low;
+
+  const pieData = Object.keys(timeByPriority).map((key) => ({
+    name: key,
+    value: timeByPriority[key],
   }));
 
-  const COLORS = ["#4caf50", "#ff9800", "#f44336"];
-
-  // ---------- Priority Chart ----------
-  const priorityCount = { Low: 0, Medium: 0, High: 0 };
-  data.tasks?.forEach(t => priorityCount[t.priority]++);
-
-  const priorityData = Object.entries(priorityCount).map(([k, v]) => ({
-    name: k,
-    value: v
+  const barData = pieData;
+  const lineData = filtered.map((t) => ({
+    name: t.title,
+    seconds: t.spentTimeSeconds || 0,
   }));
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto" }}>
-      <h2>Analytics Dashboard</h2>
-      <p>Total tasks: {data.total}</p>
+    <Box sx={{ maxWidth: 900, mx: "auto", mt: 4 }}>
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        Analytics
+      </Typography>
 
-      {/* --- STATUS PIE CHART --- */}
-      <h3>Tasks by Status</h3>
+      {/* PERIOD SELECTOR */}
+      <FormControl fullWidth sx={{ mb: 3 }}>
+        <InputLabel>Period</InputLabel>
+        <Select
+          value={period}
+          label="Period"
+          onChange={(e) => setPeriod(e.target.value)}
+        >
+          <MenuItem value="day">Today</MenuItem>
+          <MenuItem value="week">This Week</MenuItem>
+          <MenuItem value="month">This Month</MenuItem>
+          <MenuItem value="year">This Year</MenuItem>
+        </Select>
+      </FormControl>
+
+      {/* SUMMARY BLOCK */}
+      <Paper sx={{ p: 2, mb: 3 }}>
+        <Typography variant="h6">
+          Total Time: {formatTime(totalSeconds)}
+        </Typography>
+        <Typography sx={{ mt: 1 }}>
+          High Priority: {formatTime(timeByPriority.High)}
+        </Typography>
+        <Typography>
+          Medium Priority: {formatTime(timeByPriority.Medium)}
+        </Typography>
+        <Typography>
+          Low Priority: {formatTime(timeByPriority.Low)}
+        </Typography>
+      </Paper>
+
+      {/* PIE CHART */}
+      <Typography variant="h6" sx={{ mt: 2 }}>
+        Time Distribution (%)
+      </Typography>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
-          <Pie 
-            dataKey="value" 
-            data={statusData} 
-            label 
-            outerRadius={120}
-          >
-            {statusData.map((entry, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+          <Pie data={pieData} dataKey="value" outerRadius={110} label>
+            {pieData.map((entry) => (
+              <Cell key={entry.name} fill={COLORS[entry.name]} />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip formatter={(val) => formatTime(val)} />
+          <Legend />
         </PieChart>
       </ResponsiveContainer>
 
-      {/* --- TASKS BY PRIORITY --- */}
-      <h3>Tasks by Priority</h3>
+      {/* BAR CHART */}
+      <Typography variant="h6" sx={{ mt: 4 }}>
+        Time (seconds) by Priority
+      </Typography>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={priorityData}>
+        <BarChart data={barData}>
+          <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis allowDecimals={false} />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="value" fill="#3f51b5" />
+          <YAxis />
+          <Tooltip formatter={(v) => formatTime(v)} />
+          <Bar dataKey="value">
+            {barData.map((entry) => (
+              <Cell key={entry.name} fill={COLORS[entry.name]} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
 
-      {/* --- ADD MORE CHARTS LATER --- */}
-    </div>
+      {/* LINE CHART */}
+      <Typography variant="h6" sx={{ mt: 4 }}>
+        Time per Task
+      </Typography>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={lineData}>
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip formatter={(v) => formatTime(v)} />
+          <Line type="monotone" dataKey="seconds" stroke="#8884d8" />
+        </LineChart>
+      </ResponsiveContainer>
+    </Box>
   );
 }
