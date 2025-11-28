@@ -22,7 +22,15 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
   const [stagesText, setStagesText] = useState("");
   const [err, setErr] = useState("");
 
-  // 🔹 Заповнюємо поля при відкритті/редагуванні
+  // 🔹 Функція формування дати без UTC
+  const formatDate = (d) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // 🔹 Заповнюємо форму при редагуванні
   useEffect(() => {
     if (editingTask) {
       setTitle(editingTask.title || "");
@@ -35,7 +43,6 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
       setPriority(editingTask.priority || "Medium");
       setStatus(editingTask.status || "Pending");
 
-      // Якщо у майбутньому додаси stages в БД
       setStagesText("");
     } else {
       setTitle("");
@@ -66,10 +73,10 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
 
     if (!title) return setErr("Title required");
     if (!deadline) return setErr("Deadline required");
-
-    // 🔹 Дата клітинки календаря, куди додається завдання
     if (!date) return setErr("Internal date error");
-    const selectedDate = date.toISOString().slice(0, 10); // yyyy-MM-dd
+
+    // ❗️ Тепер правильно формуємо дату
+    const selectedDate = formatDate(date);
 
     const h = Number(hours || 0);
     const m = Number(minutes || 0);
@@ -90,7 +97,6 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
 
     try {
       if (editingTask && editingTask.id) {
-        // 🔴 тут теж id, НЕ _id
         await axios.put(`${API_PATHS.TASKS.BASE}/${editingTask.id}`, payload);
       } else {
         await axios.post(API_PATHS.TASKS.BASE, payload);
@@ -111,29 +117,15 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
       <DialogContent>
         {err && <Typography color="error">{err}</Typography>}
 
-        <TextField
-          fullWidth
-          label="Title"
-          margin="normal"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <TextField fullWidth label="Title" margin="normal"
+          value={title} onChange={(e) => setTitle(e.target.value)} />
+
+        <TextField fullWidth label="Description" margin="normal"
+          value={description} multiline minRows={2}
+          onChange={(e) => setDescription(e.target.value)} />
 
         <TextField
-          fullWidth
-          label="Description"
-          margin="normal"
-          value={description}
-          multiline
-          minRows={2}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <TextField
-          fullWidth
-          label="Deadline"
-          type="date"
-          margin="normal"
+          fullWidth label="Deadline" type="date" margin="normal"
           value={deadline}
           onChange={(e) => setDeadline(e.target.value)}
           InputLabelProps={{ shrink: true }}
@@ -141,55 +133,33 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
 
         <Grid container spacing={2} sx={{ mt: 1 }}>
           <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Hours"
-              type="number"
-              value={hours}
-              onChange={(e) => setHours(e.target.value)}
-            />
+            <TextField fullWidth label="Hours" type="number"
+              value={hours} onChange={(e) => setHours(e.target.value)} />
           </Grid>
           <Grid item xs={6}>
-            <TextField
-              fullWidth
-              label="Minutes"
-              type="number"
-              value={minutes}
-              onChange={(e) => setMinutes(e.target.value)}
-            />
+            <TextField fullWidth label="Minutes" type="number"
+              value={minutes} onChange={(e) => setMinutes(e.target.value)} />
           </Grid>
         </Grid>
 
-        <TextField
-          fullWidth
-          select
-          margin="normal"
-          label="Priority"
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-        >
+        <TextField fullWidth select margin="normal"
+          label="Priority" value={priority}
+          onChange={(e) => setPriority(e.target.value)}>
           <MenuItem value="Low">Low</MenuItem>
           <MenuItem value="Medium">Medium</MenuItem>
           <MenuItem value="High">High</MenuItem>
         </TextField>
 
-        <TextField
-          fullWidth
-          select
-          margin="normal"
-          label="Status"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        >
+        <TextField fullWidth select margin="normal"
+          label="Status" value={status}
+          onChange={(e) => setStatus(e.target.value)}>
           <MenuItem value="Pending">Pending</MenuItem>
           <MenuItem value="In Progress">In Progress</MenuItem>
           <MenuItem value="Completed">Completed</MenuItem>
         </TextField>
 
         <TextField
-          fullWidth
-          multiline
-          minRows={3}
+          fullWidth multiline minRows={3}
           label="Stages (one per line, [x] = completed)"
           margin="normal"
           value={stagesText}
