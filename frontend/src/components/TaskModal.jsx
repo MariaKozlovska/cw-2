@@ -8,10 +8,9 @@ import {
 import axios from "../utils/axiosInstance";
 import API_PATHS from "../utils/apiPaths";
 
-export default function TaskModal({ open, onClose, onSaved, editingTask }) {
+export default function TaskModal({ open, onClose, onSaved, editingTask, date }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
   const [deadline, setDeadline] = useState("");
 
   const [hours, setHours] = useState("");
@@ -23,54 +22,54 @@ export default function TaskModal({ open, onClose, onSaved, editingTask }) {
   const [stagesText, setStagesText] = useState("");
   const [err, setErr] = useState("");
 
+  // 🔹 Заповнюємо поля при відкритті/редагуванні
   useEffect(() => {
     if (editingTask) {
-      setTitle(editingTask.title);
-      setDescription(editingTask.description);
-      setDeadline(editingTask.deadline);
+      setTitle(editingTask.title || "");
+      setDescription(editingTask.description || "");
+      setDeadline(editingTask.deadline || "");
 
-      setHours(editingTask.expectedTimeHours || "");
-      setMinutes(editingTask.expectedTimeMinutes || "");
+      setHours(editingTask.expectedTimeHours ?? "");
+      setMinutes(editingTask.expectedTimeMinutes ?? "");
 
-      setPriority(editingTask.priority);
-      setStatus(editingTask.status);
+      setPriority(editingTask.priority || "Medium");
+      setStatus(editingTask.status || "Pending");
 
-      setStagesText(
-        (editingTask.stages || [])
-          .map(s => s.name + (s.completed ? " [x]" : ""))
-          .join("\n")
-      );
+      // Якщо у майбутньому додаси stages в БД
+      setStagesText("");
     } else {
       setTitle("");
       setDescription("");
       setDeadline("");
-
       setHours("");
       setMinutes("");
-
       setPriority("Medium");
       setStatus("Pending");
       setStagesText("");
     }
-  }, [editingTask]);
+  }, [editingTask, open]);
 
-  const parseStages = text =>
+  const parseStages = (text) =>
     text
       .split("\n")
-      .map(line => {
+      .map((line) => {
         const t = line.trim();
         if (!t) return null;
-
         const m = t.match(/^(.*?)\s*\[x\]$/i);
-        if (m) return { name: m[1].trim(), completed: true, timeSpent: 0 };
-
-        return { name: t, completed: false, timeSpent: 0 };
+        if (m) return { name: m[1].trim(), completed: true };
+        return { name: t, completed: false };
       })
       .filter(Boolean);
 
   const save = async () => {
+    setErr("");
+
     if (!title) return setErr("Title required");
     if (!deadline) return setErr("Deadline required");
+
+    // 🔹 Дата клітинки календаря, куди додається завдання
+    if (!date) return setErr("Internal date error");
+    const selectedDate = date.toISOString().slice(0, 10); // yyyy-MM-dd
 
     const h = Number(hours || 0);
     const m = Number(minutes || 0);
@@ -79,19 +78,20 @@ export default function TaskModal({ open, onClose, onSaved, editingTask }) {
     const payload = {
       title,
       description,
+      date: selectedDate,
       deadline,
       priority,
       status,
       stages: parseStages(stagesText),
-
       expectedTimeHours: h,
       expectedTimeMinutes: m,
       expectedTimeDecimal: decimal,
     };
 
     try {
-      if (editingTask) {
-        await axios.put(`${API_PATHS.TASKS.BASE}/${editingTask._id}`, payload);
+      if (editingTask && editingTask.id) {
+        // 🔴 тут теж id, НЕ _id
+        await axios.put(`${API_PATHS.TASKS.BASE}/${editingTask.id}`, payload);
       } else {
         await axios.post(API_PATHS.TASKS.BASE, payload);
       }
@@ -99,6 +99,7 @@ export default function TaskModal({ open, onClose, onSaved, editingTask }) {
       onSaved?.();
       onClose();
     } catch (e) {
+      console.log("SAVE ERROR:", e);
       setErr(e?.response?.data?.message || "Error saving task");
     }
   };
@@ -110,21 +111,31 @@ export default function TaskModal({ open, onClose, onSaved, editingTask }) {
       <DialogContent>
         {err && <Typography color="error">{err}</Typography>}
 
-        <TextField fullWidth label="Title" margin="normal"
-          value={title} onChange={e => setTitle(e.target.value)} />
+        <TextField
+          fullWidth
+          label="Title"
+          margin="normal"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-        <TextField fullWidth label="Description" margin="normal"
-          value={description} multiline minRows={2}
-          onChange={e => setDescription(e.target.value)} />
+        <TextField
+          fullWidth
+          label="Description"
+          margin="normal"
+          value={description}
+          multiline
+          minRows={2}
+          onChange={(e) => setDescription(e.target.value)}
+        />
 
-        {/* DEADLINE */}
         <TextField
           fullWidth
           label="Deadline"
           type="date"
           margin="normal"
           value={deadline}
-          onChange={e => setDeadline(e.target.value)}
+          onChange={(e) => setDeadline(e.target.value)}
           InputLabelProps={{ shrink: true }}
         />
 
@@ -135,7 +146,7 @@ export default function TaskModal({ open, onClose, onSaved, editingTask }) {
               label="Hours"
               type="number"
               value={hours}
-              onChange={e => setHours(e.target.value)}
+              onChange={(e) => setHours(e.target.value)}
             />
           </Grid>
           <Grid item xs={6}>
@@ -144,15 +155,18 @@ export default function TaskModal({ open, onClose, onSaved, editingTask }) {
               label="Minutes"
               type="number"
               value={minutes}
-              onChange={e => setMinutes(e.target.value)}
+              onChange={(e) => setMinutes(e.target.value)}
             />
           </Grid>
         </Grid>
 
         <TextField
-          fullWidth select margin="normal"
-          label="Priority" value={priority}
-          onChange={e => setPriority(e.target.value)}
+          fullWidth
+          select
+          margin="normal"
+          label="Priority"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
         >
           <MenuItem value="Low">Low</MenuItem>
           <MenuItem value="Medium">Medium</MenuItem>
@@ -160,9 +174,12 @@ export default function TaskModal({ open, onClose, onSaved, editingTask }) {
         </TextField>
 
         <TextField
-          fullWidth select margin="normal"
-          label="Status" value={status}
-          onChange={e => setStatus(e.target.value)}
+          fullWidth
+          select
+          margin="normal"
+          label="Status"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
         >
           <MenuItem value="Pending">Pending</MenuItem>
           <MenuItem value="In Progress">In Progress</MenuItem>
@@ -170,11 +187,13 @@ export default function TaskModal({ open, onClose, onSaved, editingTask }) {
         </TextField>
 
         <TextField
-          fullWidth multiline minRows={3}
+          fullWidth
+          multiline
+          minRows={3}
           label="Stages (one per line, [x] = completed)"
           margin="normal"
           value={stagesText}
-          onChange={e => setStagesText(e.target.value)}
+          onChange={(e) => setStagesText(e.target.value)}
         />
       </DialogContent>
 

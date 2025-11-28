@@ -14,6 +14,6 @@ router.get("/", auth, getTasks);
 router.post("/", auth, createTask);
 router.put("/:id", auth, updateTask);
 router.delete("/:id", auth, deleteTask);
-router.get("/analytics", auth, analytics);
+router.get("/stats/overview", auth, analytics);
 
 module.exports = router;

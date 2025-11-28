@@ -1,62 +1,58 @@
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const db = require("../db");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-// REGISTER
 exports.register = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
 
-    if (!fullName || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    if (!fullName || !email || !password)
+      return res.status(400).json({ message: "Missing fields" });
 
-    const existing = await User.findOne({ email });
-    if (existing) {
-      return res.status(400).json({ message: "Email already registered" });
-    }
+    const existing = await db.getAsync(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    if (existing)
+      return res.status(400).json({ message: "Email already exists" });
 
-    const user = new User({
-      name: fullName,   // 🎯 REMAP: front sends fullName, DB uses name
-      email,
-      passwordHash,
-    });
+    const hash = await bcrypt.hash(password, 10);
 
-    await user.save();
+    await db.runAsync(
+      "INSERT INTO users (name, email, passwordHash) VALUES (?, ?, ?)",
+      [fullName, email, hash]
+    );
 
-    // Auto-login after register
+    const newUser = await db.getAsync(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: newUser.id, email: newUser.email },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    res.json({
-      message: "User created",
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email
-      }
-    });
+    res.json({ token, user: newUser });
+
   } catch (err) {
     console.error("REGISTER ERROR:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// LOGIN
+
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password)
-      return res.status(400).json({ message: "Missing fields" });
+    const user = await db.getAsync(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
 
-    const user = await User.findOne({ email });
     if (!user)
       return res.status(400).json({ message: "Invalid credentials" });
 
@@ -65,19 +61,13 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user.id, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    res.json({
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email
-      }
-    });
+    res.json({ token, user });
+
   } catch (err) {
     console.error("LOGIN ERROR:", err);
     res.status(500).json({ message: "Server error" });

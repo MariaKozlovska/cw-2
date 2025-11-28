@@ -14,12 +14,18 @@ const taskSchema = new mongoose.Schema(
       required: true,
     },
 
-    title: { type: String, required: true, trim: true },
+    title: { type: String, required: true },
     description: { type: String, default: "" },
 
-    // deadline (new field)
+    // Дата в календарі (клітинка)
+    date: {
+      type: String, // yyyy-MM-dd
+      required: true,
+    },
+
+    // Дедлайн
     deadline: {
-      type: String, // format YYYY-MM-DD
+      type: String,
       required: true,
     },
 
@@ -41,7 +47,7 @@ const taskSchema = new mongoose.Schema(
 
     stages: [stageSchema],
 
-    spentTimeMinutes: { type: Number, default: 0 }
+    spentTimeMinutes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

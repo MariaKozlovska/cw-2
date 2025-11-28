@@ -24,12 +24,11 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [editingTask, setEditingTask] = useState(null);
 
-  // LOAD TASKS
+  // 🔹 Завантаження всіх тасок для користувача
   const loadTasks = async () => {
     try {
-      const month = format(currentDate, "yyyy-MM");  
-      const res = await axios.get(`${API_PATHS.TASKS.BASE}?month=${month}`);
-      setTasks(res.data);
+      const res = await axios.get(API_PATHS.TASKS.BASE);
+      setTasks(res.data || []);
     } catch (error) {
       console.error("TASKS LOAD ERROR:", error);
     }
@@ -38,9 +37,10 @@ export default function CalendarPage() {
   useEffect(() => {
     loadTasks();
     generateMatrix();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate]);
 
-  // GENERATE CALENDAR GRID
+  // 🔹 Генерація сітки календаря
   const generateMatrix = () => {
     let start = startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 });
     let end = endOfMonth(currentDate);
@@ -59,12 +59,7 @@ export default function CalendarPage() {
     setMatrix(weeks);
   };
 
-  const handleDayClick = (day) => {
-    setSelectedDate(day);
-    setEditingTask(null);
-    setModalOpen(true);
-  };
-
+  // 🔹 Фільтр тасок на конкретну дату (date: 'YYYY-MM-DD')
   const tasksForDate = (day) => {
     const d = format(day, "yyyy-MM-dd");
     return tasks.filter((t) => t.date === d);
@@ -73,20 +68,28 @@ export default function CalendarPage() {
   const onPrev = () => setCurrentDate((prev) => addDays(prev, -30));
   const onNext = () => setCurrentDate((prev) => addDays(prev, 30));
 
+  const handleDayClick = (day) => {
+    setSelectedDate(day);
+    setEditingTask(null);
+    setModalOpen(true);
+  };
+
   return (
     <Box sx={{ maxWidth: 900, margin: "0 auto" }}>
       {/* HEADER */}
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-        <IconButton onClick={onPrev}><ArrowBackIosNewIcon /></IconButton>
-        <Typography variant="h5">
-          {format(currentDate, "MMMM yyyy")}
-        </Typography>
-        <IconButton onClick={onNext}><ArrowForwardIosIcon /></IconButton>
+        <IconButton onClick={onPrev}>
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        <Typography variant="h5">{format(currentDate, "MMMM yyyy")}</Typography>
+        <IconButton onClick={onNext}>
+          <ArrowForwardIosIcon />
+        </IconButton>
       </Box>
 
-      {/* CALENDAR */}
+      {/* CALENDAR GRID */}
       <Paper sx={{ p: 2 }}>
-        {/* Weekday names */}
+        {/* Назви днів тижня */}
         <Box
           sx={{
             display: "grid",
@@ -101,7 +104,7 @@ export default function CalendarPage() {
           ))}
         </Box>
 
-        {/* Calendar grid */}
+        {/* Сам календар */}
         {matrix.map((week, wi) => (
           <Box
             key={wi}
@@ -122,9 +125,7 @@ export default function CalendarPage() {
                     p: 1,
                     minHeight: 80,
                     cursor: "pointer",
-                    bgcolor: isSameMonth(day, currentDate)
-                      ? "white"
-                      : "#f5f5f5",
+                    bgcolor: isSameMonth(day, currentDate) ? "white" : "#f5f5f5",
                     border: isSameDay(day, new Date())
                       ? "2px solid #1976d2"
                       : "1px solid #ddd",
@@ -134,17 +135,17 @@ export default function CalendarPage() {
                     {format(day, "d")}
                   </Typography>
 
-                  {/* TASK LABELS */}
+                  {/* Таски у клітинці */}
                   {dayTasks.map((t) => (
                     <Box
-                      key={t._id}
+                      key={t.id} // 🔴 важливо: id, НЕ _id
                       sx={{
                         bgcolor:
-                          t.priority === "High"
-                            ? "#ffcccc"
-                            : t.priority === "Medium"
+                          t.status === "Completed"
+                            ? "#d8ffd8"
+                            : t.status === "In Progress"
                             ? "#ffe9b3"
-                            : "#d8ffd8",
+                            : "#ffcccc",
                         borderRadius: 1,
                         px: 0.5,
                         py: 0.2,
@@ -171,7 +172,7 @@ export default function CalendarPage() {
         ))}
       </Paper>
 
-      {/* MODAL */}
+      {/* Модалка додати/редагувати */}
       <TaskModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
