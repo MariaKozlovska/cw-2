@@ -32,39 +32,41 @@ export default function SignUp() {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Create Account</h2>
+    <div className="auth-page">
+      <div className="auth-container">
+        <h2>Create Account</h2>
 
-      <form onSubmit={handleSignUp}>
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-        />
+        <form onSubmit={handleSignUp}>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+          />
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <input
-          type="password"
-          placeholder="Password (min 8 chars)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <input
+            type="password"
+            placeholder="Password (min 8 chars)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        {error && <p className="error">{error}</p>}
+          {error && <p className="error">{error}</p>}
 
-        <button type="submit">Sign Up</button>
+          <button type="submit">Sign Up</button>
 
-        <p>
-          Already have an account? <Link to="/login">Log In</Link>
-        </p>
-      </form>
+          <p>
+            Already have an account? <Link to="/login">Log In</Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
