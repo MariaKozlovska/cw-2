@@ -1,3 +1,4 @@
+// src/components/layout/AppLayout.jsx
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import BurgerMenu from "../BurgerMenu";
@@ -13,8 +14,8 @@ export default function AppLayout({ children }) {
   };
 
   const navigationItems = [
-    { path: "/calendar", label: "Календар", icon: "📅" },
     { path: "/tasks", label: "Завдання", icon: "📋" },
+    { path: "/calendar", label: "Календар", icon: "📅" },
     { path: "/analytics", label: "Аналітика", icon: "📊" },
     { path: "/profile", label: "Профіль", icon: "👤" },
   ];
@@ -54,7 +55,7 @@ export default function AppLayout({ children }) {
             </li>
           ))}
 
-          {/* LOGOUT */}
+          {/* Logout */}
           <li
             style={{
               marginTop: "24px",

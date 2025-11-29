@@ -1,106 +1,68 @@
-import React, { useState, useEffect } from "react";
-import { Box, Paper, Typography, TextField, Button, Avatar } from "@mui/material";
+// src/pages/Profile.jsx
+import React, { useState } from "react";
 
-export default function ProfilePage() {
-  const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+export default function Profile() {
+  const storedUser = JSON.parse(localStorage.getItem("user")) || {
+    name: "",
+    email: "",
+    avatar: null,
+  };
 
-  const [name, setName] = useState(storedUser.name || "");
-  const [email, setEmail] = useState(storedUser.email || "");
-  const [photo, setPhoto] = useState(storedUser.photo || null);
+  const [name, setName] = useState(storedUser.name);
+  const [email, setEmail] = useState(storedUser.email);
+  const [avatar, setAvatar] = useState(storedUser.avatar);
 
-  // При зміні — зберігаємо у localStorage
-  useEffect(() => {
+  const handleSave = () => {
     localStorage.setItem(
       "user",
-      JSON.stringify({
-        ...storedUser,
-        name,
-        email,
-        photo,
-      })
+      JSON.stringify({ name, email, avatar })
     );
-  }, [name, email, photo]);
+    alert("Профіль збережено ✔️");
+  };
 
-  const handlePhotoUpload = (event) => {
-    const file = event.target.files[0];
+  const handleAvatar = (e) => {
+    const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
-    reader.onload = () => setPhoto(reader.result);
+
+    reader.onload = () => setAvatar(reader.result);
     reader.readAsDataURL(file);
   };
 
-  const removePhoto = () => {
-    setPhoto(null);
-  };
-
   return (
-    <Box
-      sx={{
-        maxWidth: 520,
-        mx: "auto",
-        mt: 4,
-        px: 2,
-      }}
-    >
-      <Typography
-        variant="h4"
-        sx={{ textAlign: "center", fontWeight: 600, mb: 3 }}
-      >
-        Profile
-      </Typography>
+    <div className="profile-page fade-in">
+      <h2>Profile</h2>
 
-      <Paper sx={{ p: 3, textAlign: "center" }}>
-        {/* Фото */}
-        <Avatar
-          src={photo || ""}
-          sx={{
-            width: 120,
-            height: 120,
-            mx: "auto",
-            mb: 2,
-            bgcolor: "#e5e7eb",
-            fontSize: 40,
-          }}
-        >
-          {!photo ? "👤" : ""}
-        </Avatar>
-
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 3 }}>
-          <Button variant="contained" component="label" sx={{ textTransform: "none" }}>
-            Upload Photo
-            <input hidden type="file" accept="image/*" onChange={handlePhotoUpload} />
-          </Button>
-
-          {photo && (
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={removePhoto}
-              sx={{ textTransform: "none" }}
-            >
-              Remove
-            </Button>
-          )}
-        </Box>
-
-        {/* Імʼя */}
-        <TextField
-          label="Name"
-          fullWidth
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          sx={{ mb: 2 }}
+      <div className="profile-content">
+        <img
+          src={avatar || "/default-avatar.png"}
+          alt="avatar"
+          className="profile-avatar"
         />
 
-        {/* Email */}
-        <TextField
-          label="Email"
-          fullWidth
+        <label className="avatar-upload">
+          Змінити фото
+          <input type="file" accept="image/*" onChange={handleAvatar} />
+        </label>
+
+        <input
+          className="profile-input"
+          value={name}
+          placeholder="Ваше імʼя"
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <input
+          className="profile-input"
           value={email}
+          placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
         />
-      </Paper>
-    </Box>
+
+        <button className="profile-save" onClick={handleSave}>
+          Зберегти
+        </button>
+      </div>
+    </div>
   );
 }

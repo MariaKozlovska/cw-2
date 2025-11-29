@@ -1,3 +1,4 @@
+// src/components/BurgerMenu.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -6,77 +7,54 @@ export default function BurgerMenu() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
-    setIsOpen(false);
-    navigate("/login", { replace: true });
-  };
-
-  // Закриття при зміні сторінки
-  useEffect(() => {
-    setIsOpen(false);
-  }, [location]);
-
-  // Блокування скролу при відкритому меню
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "unset";
-    return () => (document.body.style.overflow = "unset");
-  }, [isOpen]);
-
-  const navigationItems = [
+  const navItems = [
     { path: "/calendar", label: "Календар", icon: "📅" },
     { path: "/tasks", label: "Завдання", icon: "📋" },
     { path: "/analytics", label: "Аналітика", icon: "📊" },
     { path: "/profile", label: "Профіль", icon: "👤" },
   ];
 
+  useEffect(() => setIsOpen(false), [location]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setIsOpen(false);
+    navigate("/login", { replace: true });
+  };
+
   return (
     <>
-      {/* BURGER BUTTON */}
       <button
         className={`burger-menu ${isOpen ? "active" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="burger-icon">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </div>
       </button>
 
-      {/* OVERLAY */}
       <div
         className={`sidebar-overlay ${isOpen ? "active" : ""}`}
         onClick={() => setIsOpen(false)}
       />
 
-      {/* SIDEBAR */}
       <nav className={`sidebar-nav ${isOpen ? "active" : ""}`}>
         <ul>
-          {navigationItems.map((item) => (
+          {navItems.map((item) => (
             <li key={item.path}>
               <Link
                 to={item.path}
                 className={location.pathname === item.path ? "active" : ""}
               >
-                <span style={{ marginRight: "10px" }}>{item.icon}</span>
+                <span className="nav-icon">{item.icon}</span>
                 {item.label}
               </Link>
             </li>
           ))}
 
-          {/* LOGOUT BUTTON */}
-          <li
-            style={{
-              marginTop: "24px",
-              paddingTop: "24px",
-              borderTop: "1px solid #e5e7eb",
-            }}
-          >
+          <li className="logout-item">
             <button className="logout-menu-btn" onClick={handleLogout}>
-              <span style={{ marginRight: "10px" }}>🚪</span>
+              <span className="nav-icon">🚪</span>
               Вийти
             </button>
           </li>

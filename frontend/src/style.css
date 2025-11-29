@@ -567,3 +567,182 @@ body {
 .logout-menu-btn:hover {
   background: #fef2f2;
 }
+
+/* ===========================
+   BURGER MENU — ОНОВЛЕНІ СТИЛІ 2025
+   =========================== */
+
+   .sidebar-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 12px;
+  }
+  
+  .sidebar-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1d1d1d;
+  }
+  
+  /* Іконки та текст в меню */
+  .sidebar-nav a,
+  .logout-menu-btn {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    color: #1d1d1d;
+    text-decoration: none;
+    font-size: 17px;
+    font-weight: 500;
+    border-radius: 12px;
+    margin: 4px 12px;
+    transition: all 0.2s ease;
+    min-height: 56px; /* зручно тапати пальцем */
+  }
+  
+  .sidebar-nav a:hover,
+  .logout-menu-btn:hover {
+    background: #f0f4ff;
+    color: #3b78ff;
+    transform: translateX(4px);
+  }
+  
+  .sidebar-nav a.active {
+    background: #e0ebff;
+    color: #3b78ff;
+    font-weight: 600;
+  }
+  
+  .nav-icon {
+    font-size: 20px;
+    margin-right: 14px;
+    width: 28px;
+    text-align: center;
+  }
+  
+  .nav-label {
+    flex: 1;
+    text-align: left;
+  }
+  
+  /* Логаут — червоний акцент */
+  .logout-item .logout-menu-btn {
+    color: #dc2626;
+    margin-top: 20px;
+  }
+  
+  .logout-item .logout-menu-btn:hover {
+    color: #dc2626;
+  }
+  
+  .logout-item .logout-menu-btn:hover {
+    background: #fee2e2;
+    transform: translateX(4px);
+  }
+  
+  /* Плавна анімація появи */
+  .sidebar-nav {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar-nav.active {
+    transform: translateX(0);
+  }
+
+  /* Ховаємо десктопну навігацію на мобільних, показуємо мобільний хедер */
+@media screen and (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-header {
+    display: flex !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding-top: 80px; /* місце під хедер */
+  }
+}
+
+  /* На десктопі ховаємо бургер */
+  .burger-menu {
+    display: none;
+  }
+
+@media screen and (min-width: 769px) {
+  .mobile-header {
+    display: none !important;
+  }
+
+  .burger-menu {
+    display: none !important;
+  }
+}
+
+/* ========== PROFILE PAGE ========== */
+
+.profile-page {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.profile-page h2 {
+  font-size: 28px;
+  margin-bottom: 24px;
+  font-weight: 700;
+}
+
+.profile-content {
+  background: #fff;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 16px;
+  border: 3px solid #3b78ff;
+}
+
+.avatar-upload input {
+  display: none;
+}
+
+.avatar-upload {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #3b78ff;
+  color: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+.profile-input {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border-radius: 12px;
+  border: 1.5px solid #d3d9e3;
+  background: #f8f9fb;
+}
+
+.profile-save {
+  width: 100%;
+  padding: 14px;
+  background: #3b78ff;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  margin-top: 16px;
+  cursor: pointer;
+}
