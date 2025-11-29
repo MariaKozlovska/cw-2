@@ -1,61 +1,74 @@
-// src/components/BurgerMenu.jsx
+// src/components/layout/BurgerMenu.jsx
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function BurgerMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const navItems = [
-    { path: "/calendar", label: "Календар", icon: "📅" },
-    { path: "/tasks", label: "Завдання", icon: "📋" },
-    { path: "/analytics", label: "Аналітика", icon: "📊" },
-    { path: "/profile", label: "Профіль", icon: "👤" },
+    { to: "/tasks", label: "Завдання", icon: "📋" },
+    { to: "/calendar", label: "Календар", icon: "📅" },
+    { to: "/analytics", label: "Аналітика", icon: "📊" },
+    { to: "/profile", label: "Профіль", icon: "👤" },
   ];
 
-  useEffect(() => setIsOpen(false), [location]);
-
   const handleLogout = () => {
-    localStorage.clear();
-    setIsOpen(false);
-    navigate("/login", { replace: true });
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setOpen(false);
+    navigate("/login");
   };
+
+  // Закриває меню при переході
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  // Блокуємо скролл позаду
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+  }, [open]);
 
   return (
     <>
+      {/* Бургер-кнопка */}
       <button
-        className={`burger-menu ${isOpen ? "active" : ""}`}
-        onClick={() => setIsOpen(!isOpen)}
+        className={`burger-btn ${open ? "open" : ""}`}
+        onClick={() => setOpen(!open)}
       >
-        <div className="burger-icon">
-          <span></span><span></span><span></span>
-        </div>
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
 
+      {/* Темний фон */}
       <div
-        className={`sidebar-overlay ${isOpen ? "active" : ""}`}
-        onClick={() => setIsOpen(false)}
+        className={`burger-overlay ${open ? "active" : ""}`}
+        onClick={() => setOpen(false)}
       />
 
-      <nav className={`sidebar-nav ${isOpen ? "active" : ""}`}>
-        <ul>
+      {/* Бокове меню */}
+      <nav className={`burger-sidebar ${open ? "active" : ""}`}>
+        <h2 className="sidebar-title">FocusApp</h2>
+
+        <ul className="burger-menu-list">
           {navItems.map((item) => (
-            <li key={item.path}>
+            <li key={item.to}>
               <Link
-                to={item.path}
-                className={location.pathname === item.path ? "active" : ""}
+                to={item.to}
+                className={location.pathname === item.to ? "active" : ""}
               >
-                <span className="nav-icon">{item.icon}</span>
+                <span className="icon">{item.icon}</span>
                 {item.label}
               </Link>
             </li>
           ))}
 
-          <li className="logout-item">
-            <button className="logout-menu-btn" onClick={handleLogout}>
-              <span className="nav-icon">🚪</span>
-              Вийти
+          <li>
+            <button className="logout-btn" onClick={handleLogout}>
+              <span className="icon">🚪</span> Вийти
             </button>
           </li>
         </ul>
