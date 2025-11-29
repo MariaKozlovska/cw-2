@@ -36,6 +36,7 @@ const COLORS = {
   Low: "#51cf66",
 };
 
+// Convert seconds → "1h 23m 10s"
 const formatTime = (sec) => {
   const h = Math.floor(sec / 3600);
   const m = Math.floor((sec % 3600) / 60);
@@ -49,6 +50,7 @@ export default function AnalyticsPage() {
 
   const isNarrow = useMediaQuery("(max-width: 768px)");
 
+  // Load tasks
   const loadTasks = async () => {
     try {
       const res = await axios.get(API_PATHS.TASKS.BASE);
@@ -62,6 +64,7 @@ export default function AnalyticsPage() {
     loadTasks();
   }, []);
 
+  // Filter by time period
   const filterByPeriod = () => {
     const now = new Date();
 
@@ -89,6 +92,7 @@ export default function AnalyticsPage() {
 
   const filtered = filterByPeriod();
 
+  // Build time-by-priority map
   const timeByPriority = filtered.reduce(
     (acc, t) => {
       acc[t.priority] += t.spentTimeSeconds || 0;
@@ -100,12 +104,20 @@ export default function AnalyticsPage() {
   const totalSeconds =
     timeByPriority.High + timeByPriority.Medium + timeByPriority.Low;
 
+  // NEW ➜ PieChart uses PERCENTAGES instead of seconds
   const pieData = Object.keys(timeByPriority).map((key) => ({
+    name: key,
+    seconds: timeByPriority[key], // needed for tooltip
+    value:
+      totalSeconds > 0
+        ? Math.round((timeByPriority[key] / totalSeconds) * 100)
+        : 0,
+  }));
+
+  const barData = Object.keys(timeByPriority).map((key) => ({
     name: key,
     value: timeByPriority[key],
   }));
-
-  const barData = pieData;
 
   const lineData = filtered.map((t) => ({
     name: t.title,
@@ -128,7 +140,7 @@ export default function AnalyticsPage() {
         Analytics
       </Typography>
 
-      {/* PERIOD SELECTOR */}
+      {/* PERIOD SELECT */}
       <FormControl fullWidth sx={{ mb: 3 }}>
         <InputLabel>Period</InputLabel>
         <Select
@@ -159,23 +171,37 @@ export default function AnalyticsPage() {
         </Typography>
       </Paper>
 
-      {/* PIE */}
+      {/* ===== PIE CHART (PERCENTAGES) ===== */}
       <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
-        Time Distribution
+        Time Distribution (%)
       </Typography>
+
       <ResponsiveContainer width="100%" height={280}>
         <PieChart>
-          <Pie data={pieData} dataKey="value" outerRadius={110} label>
+          <Pie
+            data={pieData}
+            dataKey="value"
+            nameKey="name"
+            outerRadius={110}
+            label={({ value }) => `${value}%`}
+          >
             {pieData.map((entry) => (
               <Cell key={entry.name} fill={COLORS[entry.name]} />
             ))}
           </Pie>
-          <Tooltip formatter={(val) => formatTime(val)} />
+
+          <Tooltip
+            formatter={(value, name, props) => {
+              const sec = props.payload.seconds;
+              return [`${value}% (${formatTime(sec)})`, name];
+            }}
+          />
+
           <Legend />
         </PieChart>
       </ResponsiveContainer>
 
-      {/* BOTTOM CHARTS */}
+      {/* ===== BOTTOM CHARTS ===== */}
       <Box
         sx={{
           display: "grid",
@@ -184,12 +210,9 @@ export default function AnalyticsPage() {
           mt: 4,
         }}
       >
-        {/* BAR */}
+        {/* BAR CHART */}
         <Paper sx={{ p: 2 }}>
-          <Typography
-            variant="h6"
-            sx={{ mb: 1, textAlign: "center" }}
-          >
+          <Typography variant="h6" sx={{ mb: 1, textAlign: "center" }}>
             Time by Priority
           </Typography>
           <ResponsiveContainer width="100%" height={260}>
@@ -207,12 +230,9 @@ export default function AnalyticsPage() {
           </ResponsiveContainer>
         </Paper>
 
-        {/* LINE */}
+        {/* LINE CHART */}
         <Paper sx={{ p: 2 }}>
-          <Typography
-            variant="h6"
-            sx={{ mb: 1, textAlign: "center" }}
-          >
+          <Typography variant="h6" sx={{ mb: 1, textAlign: "center" }}>
             Time per Task
           </Typography>
           <ResponsiveContainer width="100%" height={260}>
