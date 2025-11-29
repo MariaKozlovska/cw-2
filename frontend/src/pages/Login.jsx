@@ -19,17 +19,17 @@ export default function Login() {
     }
 
     try {
-      const response = await axiosInstance.post("/api/auth/login", {
+      const res = await axiosInstance.post("/api/auth/login", {
         email,
         password,
       });
 
-      const { token, user } = response.data;
+      const { token, user } = res.data;
 
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/calendar"); // ✔ ПЕРЕХІД НА КАЛЕНДАР
+      navigate("/calendar");
     } catch (err) {
       setError(err?.response?.data?.message || "Login failed");
     }
@@ -58,7 +58,7 @@ export default function Login() {
 
         <button type="submit">Log In</button>
 
-        <p>
+        <p className="switch-link">
           Don't have an account? <Link to="/signup">Sign Up</Link>
         </p>
       </form>

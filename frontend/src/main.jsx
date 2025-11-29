@@ -8,6 +8,7 @@ import SignUp from "./pages/SignUp";
 import CalendarPage from "./pages/CalendarPage";
 import TasksPage from "./pages/TasksPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
+import './style.css' 
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>

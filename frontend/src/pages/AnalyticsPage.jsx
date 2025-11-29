@@ -7,6 +7,7 @@ import {
   MenuItem,
   InputLabel,
   Paper,
+  useMediaQuery
 } from "@mui/material";
 
 import axios from "../utils/axiosInstance";
@@ -48,6 +49,9 @@ export default function AnalyticsPage() {
   const [tasks, setTasks] = useState([]);
   const [period, setPeriod] = useState("week");
 
+  // For mobile layout
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
   const loadTasks = async () => {
     try {
       const res = await axios.get(API_PATHS.TASKS.BASE);
@@ -72,15 +76,19 @@ export default function AnalyticsPage() {
       switch (period) {
         case "day":
           return d.toDateString() === now.toDateString();
+
         case "week":
           return diff <= 7 * 24 * 60 * 60 * 1000;
+
         case "month":
           return (
             d.getMonth() === now.getMonth() &&
             d.getFullYear() === now.getFullYear()
           );
+
         case "year":
           return d.getFullYear() === now.getFullYear();
+
         default:
           return true;
       }
@@ -107,14 +115,15 @@ export default function AnalyticsPage() {
   }));
 
   const barData = pieData;
+
   const lineData = filtered.map((t) => ({
     name: t.title,
     seconds: t.spentTimeSeconds || 0,
   }));
 
   return (
-    <Box sx={{ maxWidth: 900, mx: "auto", mt: 4 }}>
-      <Typography variant="h4" sx={{ mb: 3 }}>
+    <Box sx={{ maxWidth: 900, mx: "auto", mt: 4, px: 2 }}>
+      <Typography variant="h4" sx={{ mb: 3, textAlign: "center" }}>
         Analytics
       </Typography>
 
@@ -153,7 +162,7 @@ export default function AnalyticsPage() {
       <Typography variant="h6" sx={{ mt: 2 }}>
         Time Distribution (%)
       </Typography>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={280}>
         <PieChart>
           <Pie data={pieData} dataKey="value" outerRadius={110} label>
             {pieData.map((entry) => (
@@ -165,36 +174,50 @@ export default function AnalyticsPage() {
         </PieChart>
       </ResponsiveContainer>
 
-      {/* BAR CHART */}
-      <Typography variant="h6" sx={{ mt: 4 }}>
-        Time (seconds) by Priority
-      </Typography>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={barData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip formatter={(v) => formatTime(v)} />
-          <Bar dataKey="value">
-            {barData.map((entry) => (
-              <Cell key={entry.name} fill={COLORS[entry.name]} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      {/* ===== BOTTOM CHARTS (side-by-side or stacked) ===== */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          gap: 3,
+          mt: 4,
+        }}
+      >
+        {/* LEFT — BAR CHART */}
+        <Paper sx={{ p: 2 }}>
+          <Typography variant="h6" sx={{ mb: 1, textAlign: "center" }}>
+            Time by Priority
+          </Typography>
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={barData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip formatter={(v) => formatTime(v)} />
+              <Bar dataKey="value">
+                {barData.map((entry) => (
+                  <Cell key={entry.name} fill={COLORS[entry.name]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </Paper>
 
-      {/* LINE CHART */}
-      <Typography variant="h6" sx={{ mt: 4 }}>
-        Time per Task
-      </Typography>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={lineData}>
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip formatter={(v) => formatTime(v)} />
-          <Line type="monotone" dataKey="seconds" stroke="#8884d8" />
-        </LineChart>
-      </ResponsiveContainer>
+        {/* RIGHT — LINE CHART */}
+        <Paper sx={{ p: 2 }}>
+          <Typography variant="h6" sx={{ mb: 1, textAlign: "center" }}>
+            Time per Task
+          </Typography>
+          <ResponsiveContainer width="100%" height={260}>
+            <LineChart data={lineData}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip formatter={(v) => formatTime(v)} />
+              <Line type="monotone" dataKey="seconds" stroke="#8884d8" />
+            </LineChart>
+          </ResponsiveContainer>
+        </Paper>
+      </Box>
     </Box>
   );
 }

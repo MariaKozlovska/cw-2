@@ -20,19 +20,18 @@ export default function SignUp() {
     }
 
     try {
-      const response = await axiosInstance.post("/api/auth/register", {
+      const res = await axiosInstance.post("/api/auth/register", {
         fullName,
         email,
         password,
       });
 
-      const { token, user } = response.data;
+      const { token, user } = res.data;
 
-      // auto login after register
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/calendar"); // ✔ після реєстрації одразу в календар
+      navigate("/calendar");
     } catch (err) {
       setError(err?.response?.data?.message || "Registration failed");
     }
@@ -45,7 +44,7 @@ export default function SignUp() {
       <form onSubmit={handleSignUp}>
         <input
           type="text"
-          placeholder="Full name"
+          placeholder="Full Name"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
         />
@@ -68,7 +67,7 @@ export default function SignUp() {
 
         <button type="submit">Sign Up</button>
 
-        <p>
+        <p className="switch-link">
           Already have an account? <Link to="/login">Log In</Link>
         </p>
       </form>

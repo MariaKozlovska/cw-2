@@ -1,110 +1,165 @@
+/* ---------- LOGIN & SIGNUP ---------- */
+
 .auth-container {
-    max-width: 350px;
-    margin: 50px auto;
+  max-width: 350px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  transition: 0.3s;
+}
+
+.auth-container h2 {
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #222;
+}
+
+.auth-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+.auth-container input:focus {
+  border-color: #1976d2;
+  background: white;
+  outline: none;
+  box-shadow: 0 0 3px rgba(25, 118, 210, 0.4);
+}
+
+.auth-container button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.auth-container button:hover {
+  background: #0d47a1;
+}
+
+.error {
+  color: #d32f2f;
+  margin-top: -5px;
+  font-size: 14px;
+}
+
+.switch-link {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.switch-link a {
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch-link a:hover {
+  text-decoration: underline;
+}
+
+/* MOBILE ADAPTATION */
+@media (max-width: 480px) {
+  .auth-container {
+    margin: 40px 20px;
     padding: 25px;
-    border-radius: 10px;
-    background: #fff;
-    box-shadow: 0 0 10px #ccc;
-    text-align: center;
   }
-  
+
   .auth-container h2 {
-    margin-bottom: 20px;
+    font-size: 22px;
   }
-  
-  .auth-container input {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 6px;
-    border: 1px solid #aaa;
-  }
-  
+
   .auth-container button {
-    margin-top: 10px;
-    width: 100%;
-    padding: 12px;
-    background: #1976d2;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    font-size: 15px;
   }
-  
-  .auth-container button:hover {
-    background: #0d47a1;
-  }
-  
-  .error {
-    color: red;
-    margin-top: 5px;
-  }
-  
-  .calendar {
-    width: 90%;
-    margin: auto;
-    margin-top: 20px;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px 0;
-    font-size: 24px;
-  }
-  
-  .col-center {
-    text-align: center;
-  }
-  
-  .days {
-    display: flex;
-  }
-  
-  .body .row {
-    display: flex;
-  }
-  
-  .col {
-    flex: 1;
-    border: 1px solid #eee;
-    min-height: 110px;
-    padding: 4px;
-    cursor: pointer;
-    position: relative;
-  }
-  
-  .col.disabled {
-    background: #f7f7f7;
-    color: #ccc;
-  }
-  
-  .col.selected {
-    background: #e3f2fd;
-  }
-  
-  .number {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    font-weight: bold;
-  }
-  
-  .tasks-preview {
-    margin-top: 22px;
-  }
-  
-  .task-chip {
-    padding: 3px 5px;
-    border-radius: 6px;
-    margin-bottom: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: transform 0.1s ease-in;
-  }
-  
-  .task-chip:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 4px #999;
-  }
-  
+}
+
+/* Your existing calendar and task styles below */
+.calendar {
+  width: 90%;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+  font-size: 24px;
+}
+
+.col-center {
+  text-align: center;
+}
+
+.days {
+  display: flex;
+}
+
+.body .row {
+  display: flex;
+}
+
+.col {
+  flex: 1;
+  border: 1px solid #eee;
+  min-height: 110px;
+  padding: 4px;
+  cursor: pointer;
+  position: relative;
+}
+
+.col.disabled {
+  background: #f7f7f7;
+  color: #ccc;
+}
+
+.col.selected {
+  background: #e3f2fd;
+}
+
+.number {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-weight: bold;
+}
+
+.tasks-preview {
+  margin-top: 22px;
+}
+
+.task-chip {
+  padding: 3px 5px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform 0.1s ease-in;
+}
+
+.task-chip:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 4px #999;
+}
