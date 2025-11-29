@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
+import "../style.css";
 
 export default function SignUp() {
   const [fullName, setFullName] = useState("");
@@ -14,11 +15,6 @@ export default function SignUp() {
     e.preventDefault();
     setError("");
 
-    if (!fullName || !email || !password) {
-      setError("All fields are required");
-      return;
-    }
-
     try {
       const res = await axiosInstance.post("/api/auth/register", {
         fullName,
@@ -26,10 +22,8 @@ export default function SignUp() {
         password,
       });
 
-      const { token, user } = res.data;
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       navigate("/calendar");
     } catch (err) {
@@ -67,7 +61,7 @@ export default function SignUp() {
 
         <button type="submit">Sign Up</button>
 
-        <p className="switch-link">
+        <p>
           Already have an account? <Link to="/login">Log In</Link>
         </p>
       </form>

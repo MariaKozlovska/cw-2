@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
+import "../style.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -13,21 +14,14 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
-    if (!email || !password) {
-      setError("Please enter email and password");
-      return;
-    }
-
     try {
       const res = await axiosInstance.post("/api/auth/login", {
         email,
         password,
       });
 
-      const { token, user } = res.data;
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       navigate("/calendar");
     } catch (err) {
@@ -58,7 +52,7 @@ export default function Login() {
 
         <button type="submit">Log In</button>
 
-        <p className="switch-link">
+        <p>
           Don't have an account? <Link to="/signup">Sign Up</Link>
         </p>
       </form>
