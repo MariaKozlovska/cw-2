@@ -1,44 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const BurgerMenu = () => {
+export default function BurgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Логаут
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsOpen(false);
+    navigate('/login', { replace: true });
+  };
 
   // Закриваємо меню при зміні сторінки
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
 
-  // Блокуємо scroll body коли меню відкрите
+  // Заборона скролу фону коли меню відкрите
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : 'unset';
     return () => {
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
   const navigationItems = [
-    { path: '/tasks', label: 'Завдання', icon: '📋' },
     { path: '/calendar', label: 'Календар', icon: '📅' },
+    { path: '/tasks', label: 'Завдання', icon: '📋' },
     { path: '/analytics', label: 'Аналітика', icon: '📊' },
-    { path: '/profile', label: 'Профіль', icon: '👤' },
   ];
 
   return (
     <>
-      {/* Burger Button */}
+      {/* Burger button */}
       <button
         className={`burger-menu ${isOpen ? 'active' : ''}`}
-        onClick={toggleMenu}
+        onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle menu"
       >
         <div className="burger-icon">
@@ -51,10 +51,10 @@ const BurgerMenu = () => {
       {/* Overlay */}
       <div
         className={`sidebar-overlay ${isOpen ? 'active' : ''}`}
-        onClick={toggleMenu}
+        onClick={() => setIsOpen(false)}
       />
 
-      {/* Sidebar Navigation */}
+      {/* Sidebar menu */}
       <nav className={`sidebar-nav ${isOpen ? 'active' : ''}`}>
         <ul>
           {navigationItems.map((item) => (
@@ -68,16 +68,16 @@ const BurgerMenu = () => {
               </Link>
             </li>
           ))}
+
+          {/* Logout */}
           <li style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid #e5e7eb' }}>
-            <Link to="/logout" style={{ color: '#dc2626' }}>
+            <button onClick={handleLogout}>
               <span style={{ marginRight: '10px' }}>🚪</span>
               Вийти
-            </Link>
+            </button>
           </li>
         </ul>
       </nav>
     </>
   );
-};
-
-export default BurgerMenu;
+}

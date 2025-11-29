@@ -36,7 +36,6 @@ const COLORS = {
   Low: "#51cf66",
 };
 
-// Convert seconds → "1h 23m 10s"
 const formatTime = (sec) => {
   const h = Math.floor(sec / 3600);
   const m = Math.floor((sec % 3600) / 60);

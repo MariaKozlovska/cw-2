@@ -2,6 +2,8 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import Logout from "./pages/Logout";
+
 
 import CalendarPage from "./pages/CalendarPage";
 import TasksPage from "./pages/TasksPage";
@@ -15,6 +17,7 @@ export default function App() {
       {/* AUTH PAGES */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
+      <Route path="/logout" element={<Logout />} />
 
       {/* MAIN AREA */}
       <Route
