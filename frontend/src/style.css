@@ -2,545 +2,568 @@
    GLOBAL RESET (SAFE)
    =========================== */
 
-   body {
-    margin: 0;
-    padding: 0;
-    background: #f5f7fa;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  /* ВАЖЛИВО: НЕ ЧІПАТИ button, input, *, form — щоб не ламати MUI */
-  
-  /* ===========================
-     AUTH PAGES (LOGIN / SIGNUP)
-     =========================== */
-  
+body {
+  margin: 0;
+  padding: 0;
+  background: #f5f7fa;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ВАЖЛИВО: НЕ ЧІПАТИ button, input, *, form — щоб не ламати MUI */
+
+/* ===========================
+   AUTH PAGES (LOGIN / SIGNUP)
+   =========================== */
+
+.auth-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 22px;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 430px;
+  padding: 45px;
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.auth-container h2 {
+  font-size: 32px;
+  margin-bottom: 28px;
+  font-weight: 700;
+  color: #1d1d1d;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 12px;
+  border: 1.5px solid #d3d9e3;
+  background: #f8f9fb;
+  font-size: 15px;
+  transition: 0.2s ease;
+  box-sizing: border-box;
+}
+
+.auth-container input:focus {
+  outline: none;
+  border-color: #4a83ff;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(74, 131, 255, 0.15);
+}
+
+.auth-container button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 25px;
+  border: none;
+  border-radius: 12px;
+  background: #3b78ff;
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+  box-sizing: border-box;
+}
+
+.auth-container button:hover {
+  background: #2d5fcc;
+}
+
+.auth-container button:active {
+  transform: scale(0.98);
+}
+
+.auth-container p {
+  margin-top: 18px;
+  font-size: 15px;
+  color: #444;
+}
+
+.auth-container a {
+  color: #2d5fcc;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-container a:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: #d62828;
+  font-weight: 700;
+  margin-top: 5px;
+  font-size: 15px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================
+   OPTIONAL: light animations
+   =========================== */
+
+.fade-in {
+  animation: fadeIn 0.4s ease;
+}
+
+/* ===========================
+   RESPONSIVE BREAKPOINTS
+   =========================== */
+
+/* Планшети (portrait) і малі екрани */
+@media screen and (max-width: 768px) {
   .auth-page {
-    min-height: 100vh;
-    background: #f5f7fa;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 22px;
+    padding: 16px;
   }
-  
+
   .auth-container {
-    width: 100%;
-    max-width: 430px;
-    padding: 45px;
-    background: #ffffff;
-    border-radius: 22px;
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
-    text-align: center;
-    animation: fadeIn 0.4s ease;
+    max-width: 100%;
+    padding: 35px 28px;
+    border-radius: 18px;
   }
-  
+
   .auth-container h2 {
-    font-size: 32px;
-    margin-bottom: 28px;
-    font-weight: 700;
-    color: #1d1d1d;
+    font-size: 28px;
+    margin-bottom: 24px;
   }
-  
+
   .auth-container input {
-    width: 100%;
-    padding: 14px;
-    margin: 12px 0;
-    border-radius: 12px;
-    border: 1.5px solid #d3d9e3;
-    background: #f8f9fb;
-    font-size: 15px;
-    transition: 0.2s ease;
-    box-sizing: border-box;
+    padding: 13px;
+    font-size: 16px; /* 16px запобігає zoom на iOS */
+    margin: 10px 0;
   }
-  
-  .auth-container input:focus {
-    outline: none;
-    border-color: #4a83ff;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(74, 131, 255, 0.15);
-  }
-  
+
   .auth-container button {
-    width: 100%;
-    padding: 15px;
-    margin-top: 25px;
-    border: none;
-    border-radius: 12px;
-    background: #3b78ff;
-    color: white;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.25s ease;
-    box-sizing: border-box;
-  }
-  
-  .auth-container button:hover {
-    background: #2d5fcc;
-  }
-  
-  .auth-container button:active {
-    transform: scale(0.98);
-  }
-  
-  .auth-container p {
-    margin-top: 18px;
-    font-size: 15px;
-    color: #444;
-  }
-  
-  .auth-container a {
-    color: #2d5fcc;
-    font-weight: 600;
-    text-decoration: none;
-  }
-  
-  .auth-container a:hover {
-    text-decoration: underline;
-  }
-  
-  .error {
-    color: #d62828;
-    font-weight: 700;
-    margin-top: 5px;
-    font-size: 15px;
-    animation: fadeIn 0.2s ease;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  /* ===========================
-     OPTIONAL: light animations
-     =========================== */
-  
-  .fade-in {
-    animation: fadeIn 0.4s ease;
-  }
-  
-  /* ===========================
-     RESPONSIVE BREAKPOINTS
-     =========================== */
-  
-  /* Планшети (portrait) і малі екрани */
-  @media screen and (max-width: 768px) {
-    .auth-page {
-      padding: 16px;
-    }
-  
-    .auth-container {
-      max-width: 100%;
-      padding: 35px 28px;
-      border-radius: 18px;
-    }
-  
-    .auth-container h2 {
-      font-size: 28px;
-      margin-bottom: 24px;
-    }
-  
-    .auth-container input {
-      padding: 13px;
-      font-size: 16px; /* 16px запобігає zoom на iOS */
-      margin: 10px 0;
-    }
-  
-    .auth-container button {
-      padding: 14px;
-      font-size: 16px;
-      margin-top: 20px;
-    }
-  
-    .auth-container p {
-      font-size: 14px;
-    }
-  
-    .error {
-      font-size: 14px;
-    }
-  
-    /* Показуємо бургер-меню */
-    .burger-menu {
-      display: flex;
-    }
-  
-    /* Ховаємо desktop navigation */
-    .desktop-nav {
-      display: none;
-    }
-  
-    /* Показуємо mobile header */
-    .mobile-header {
-      display: flex;
-    }
-  
-    /* Прибираємо margin від sidebar */
-    .main-content {
-      margin-left: 0;
-      padding: 84px 16px 16px; /* Додаємо padding-top для header */
-    }
-  }
-  
-  /* Мобільні телефони (portrait) */
-  @media screen and (max-width: 480px) {
-    .auth-page {
-      padding: 12px;
-    }
-  
-    .auth-container {
-      padding: 28px 22px;
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    }
-  
-    .auth-container h2 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-  
-    .auth-container input {
-      padding: 12px;
-      font-size: 16px;
-      margin: 8px 0;
-      border-radius: 10px;
-    }
-  
-    .auth-container button {
-      padding: 13px;
-      font-size: 16px;
-      margin-top: 18px;
-      border-radius: 10px;
-    }
-  
-    .auth-container p {
-      font-size: 13px;
-      margin-top: 16px;
-    }
-  
-    .error {
-      font-size: 13px;
-    }
-  
-    /* Burger menu меньше */
-    .burger-menu {
-      top: 14px;
-      right: 14px;
-      padding: 10px;
-    }
-  
-    .burger-icon {
-      width: 22px;
-      gap: 4px;
-    }
-  
-    /* Sidebar вужча */
-    .sidebar-nav {
-      width: 260px;
-    }
-  
-    /* Mobile header менший */
-    .mobile-header {
-      height: 56px;
-      padding: 0 16px;
-    }
-  
-    .mobile-header h1 {
-      font-size: 18px;
-    }
-  
-    /* Main content з меншим padding */
-    .main-content {
-      padding: 72px 12px 12px;
-    }
-  }
-  
-  /* Дуже малі екрани */
-  @media screen and (max-width: 360px) {
-    .auth-container {
-      padding: 24px 18px;
-    }
-  
-    .auth-container h2 {
-      font-size: 22px;
-    }
-  
-    .auth-container input,
-    .auth-container button {
-      font-size: 15px;
-    }
-  
-    /* Sidebar на весь екран */
-    .sidebar-nav {
-      width: 100%;
-    }
-  
-    /* Burger меню ще меньше */
-    .burger-menu {
-      top: 12px;
-      right: 12px;
-      padding: 8px;
-    }
-  
-    .burger-icon {
-      width: 20px;
-      gap: 3px;
-    }
-  
-    .burger-icon span {
-      height: 2.5px;
-    }
-  }
-  
-  /* Великі екрани (десктопи) */
-  @media screen and (min-width: 1200px) {
-    .auth-container {
-      max-width: 460px;
-      padding: 50px;
-    }
-  
-    .auth-container h2 {
-      font-size: 34px;
-    }
-  }
-  
-  /* Landscape орієнтація для мобільних */
-  @media screen and (max-height: 600px) and (orientation: landscape) {
-    .auth-page {
-      padding: 12px;
-    }
-  
-    .auth-container {
-      padding: 20px 28px;
-      margin: 10px 0;
-    }
-  
-    .auth-container h2 {
-      font-size: 22px;
-      margin-bottom: 16px;
-    }
-  
-    .auth-container input {
-      padding: 10px;
-      margin: 6px 0;
-    }
-  
-    .auth-container button {
-      padding: 11px;
-      margin-top: 14px;
-    }
-  }
-  
-  /* Touch device оптимізація */
-  @media (hover: none) and (pointer: coarse) {
-    .auth-container button {
-      min-height: 44px; /* Apple Human Interface Guidelines */
-    }
-  
-    .auth-container input {
-      min-height: 44px;
-    }
-  }
-  
-  /* ===========================
-     BURGER MENU (для мобільних)
-     =========================== */
-  
-  .burger-menu {
-    display: none;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    background: #ffffff;
-    border: none;
-    border-radius: 12px;
-    padding: 12px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: 0.3s ease;
-  }
-  
-  .burger-menu:hover {
-    background: #f8f9fb;
-    transform: scale(1.05);
-  }
-  
-  .burger-menu:active {
-    transform: scale(0.95);
-  }
-  
-  .burger-icon {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    width: 24px;
-  }
-  
-  .burger-icon span {
-    display: block;
-    width: 100%;
-    height: 3px;
-    background: #3b78ff;
-    border-radius: 2px;
-    transition: 0.3s ease;
-  }
-  
-  .burger-menu.active .burger-icon span:nth-child(1) {
-    transform: rotate(45deg) translate(8px, 8px);
-  }
-  
-  .burger-menu.active .burger-icon span:nth-child(2) {
-    opacity: 0;
-  }
-  
-  .burger-menu.active .burger-icon span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
-  }
-  
-  /* Sidebar Navigation */
-  .sidebar-nav {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 280px;
-    height: 100vh;
-    background: #ffffff;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-    z-index: 999;
-    padding: 80px 24px 24px;
-    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-y: auto;
-  }
-  
-  .sidebar-nav.active {
-    right: 0;
-  }
-  
-  .sidebar-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .sidebar-nav li {
-    margin-bottom: 8px;
-  }
-  
-  .sidebar-nav a {
-    display: block;
-    padding: 14px 18px;
-    color: #1d1d1d;
-    text-decoration: none;
-    border-radius: 10px;
+    padding: 14px;
     font-size: 16px;
-    font-weight: 500;
-    transition: 0.2s ease;
+    margin-top: 20px;
   }
-  
-  .sidebar-nav a:hover,
-  .sidebar-nav a.active {
-    background: #f0f4ff;
-    color: #3b78ff;
+
+  .auth-container p {
+    font-size: 14px;
   }
-  
-  /* Overlay для sidebar */
-  .sidebar-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 998;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+
+  .error {
+    font-size: 14px;
   }
-  
-  .sidebar-overlay.active {
-    display: block;
-    opacity: 1;
-  }
-  
-  /* ===========================
-     MAIN APP LAYOUT
-     =========================== */
-  
-  .app-container {
+
+  /* Показуємо бургер-меню */
+  .burger-menu {
     display: flex;
-    min-height: 100vh;
   }
-  
+
+  /* Ховаємо desktop navigation */
   .desktop-nav {
-    width: 260px;
-    background: #ffffff;
-    border-right: 1px solid #e5e7eb;
-    padding: 24px 16px;
-    position: fixed;
-    height: 100vh;
-    overflow-y: auto;
-  }
-  
-  .desktop-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .desktop-nav li {
-    margin-bottom: 6px;
-  }
-  
-  .desktop-nav a {
-    display: flex;
-    align-items: center;
-    padding: 12px 16px;
-    color: #4b5563;
-    text-decoration: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 500;
-    transition: 0.2s ease;
-  }
-  
-  .desktop-nav a:hover,
-  .desktop-nav a.active {
-    background: #f0f4ff;
-    color: #3b78ff;
-  }
-  
-  .main-content {
-    flex: 1;
-    margin-left: 260px;
-    padding: 24px;
-    transition: margin-left 0.3s ease;
-  }
-  
-  /* Header для мобільних */
-  .mobile-header {
     display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-    z-index: 900;
-    padding: 0 20px;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
-  
+
+  /* Показуємо mobile header */
+  .mobile-header {
+    display: flex;
+  }
+
+  /* Прибираємо margin від sidebar */
+  .main-content {
+    margin-left: 0;
+    padding: 84px 16px 16px; /* Додаємо padding-top для header */
+  }
+}
+
+/* Мобільні телефони (portrait) */
+@media screen and (max-width: 480px) {
+  .auth-page {
+    padding: 12px;
+  }
+
+  .auth-container {
+    padding: 28px 22px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .auth-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .auth-container input {
+    padding: 12px;
+    font-size: 16px;
+    margin: 8px 0;
+    border-radius: 10px;
+  }
+
+  .auth-container button {
+    padding: 13px;
+    font-size: 16px;
+    margin-top: 18px;
+    border-radius: 10px;
+  }
+
+  .auth-container p {
+    font-size: 13px;
+    margin-top: 16px;
+  }
+
+  .error {
+    font-size: 13px;
+  }
+
+  /* Burger menu меньше */
+  .burger-menu {
+    top: 14px;
+    right: 14px;
+    padding: 10px;
+  }
+
+  .burger-icon {
+    width: 22px;
+    gap: 4px;
+  }
+
+  /* Sidebar вужча */
+  .sidebar-nav {
+    width: 260px;
+  }
+
+  /* Mobile header менший */
+  .mobile-header {
+    height: 56px;
+    padding: 0 16px;
+  }
+
   .mobile-header h1 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #1d1d1d;
-    margin: 0;
+    font-size: 18px;
   }
+
+  /* Main content з меншим padding */
+  .main-content {
+    padding: 72px 12px 12px;
+  }
+}
+
+/* Дуже малі екрани */
+@media screen and (max-width: 360px) {
+  .auth-container {
+    padding: 24px 18px;
+  }
+
+  .auth-container h2 {
+    font-size: 22px;
+  }
+
+  .auth-container input,
+  .auth-container button {
+    font-size: 15px;
+  }
+
+  /* Sidebar на весь екран */
+  .sidebar-nav {
+    width: 100%;
+  }
+
+  /* Burger меню ще меньше */
+  .burger-menu {
+    top: 12px;
+    right: 12px;
+    padding: 8px;
+  }
+
+  .burger-icon {
+    width: 20px;
+    gap: 3px;
+  }
+
+  .burger-icon span {
+    height: 2.5px;
+  }
+}
+
+/* Великі екрани (десктопи) */
+@media screen and (min-width: 1200px) {
+  .auth-container {
+    max-width: 460px;
+    padding: 50px;
+  }
+
+  .auth-container h2 {
+    font-size: 34px;
+  }
+}
+
+/* Landscape орієнтація для мобільних */
+@media screen and (max-height: 600px) and (orientation: landscape) {
+  .auth-page {
+    padding: 12px;
+  }
+
+  .auth-container {
+    padding: 20px 28px;
+    margin: 10px 0;
+  }
+
+  .auth-container h2 {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .auth-container input {
+    padding: 10px;
+    margin: 6px 0;
+  }
+
+  .auth-container button {
+    padding: 11px;
+    margin-top: 14px;
+  }
+}
+
+/* Touch device оптимізація */
+@media (hover: none) and (pointer: coarse) {
+  .auth-container button {
+    min-height: 44px; /* Apple Human Interface Guidelines */
+  }
+
+  .auth-container input {
+    min-height: 44px;
+  }
+}
+
+/* ===========================
+   BURGER MENU (для мобільних)
+   =========================== */
+
+.burger-menu {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease;
+}
+
+.burger-menu:hover {
+  background: #f8f9fb;
+  transform: scale(1.05);
+}
+
+.burger-menu:active {
+  transform: scale(0.95);
+}
+
+.burger-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 24px;
+}
+
+.burger-icon span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #3b78ff;
+  border-radius: 2px;
+  transition: 0.3s ease;
+}
+
+.burger-menu.active .burger-icon span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.burger-menu.active .burger-icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-menu.active .burger-icon span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Sidebar Navigation */
+.sidebar-nav {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 280px;
+  height: 100vh;
+  background: #ffffff;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  padding: 80px 24px 24px;
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+.sidebar-nav.active {
+  right: 0;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav li {
+  margin-bottom: 8px;
+}
+
+.sidebar-nav a {
+  display: block;
+  padding: 14px 18px;
+  color: #1d1d1d;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  background: #f0f4ff;
+  color: #3b78ff;
+}
+
+/* Overlay для sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 998;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* ===========================
+   MAIN APP LAYOUT
+   =========================== */
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.desktop-nav {
+  width: 260px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 24px 16px;
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.desktop-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.desktop-nav li {
+  margin-bottom: 6px;
+}
+
+.desktop-nav a {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: #4b5563;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.desktop-nav a:hover,
+.desktop-nav a.active {
+  background: #f0f4ff;
+  color: #3b78ff;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  padding: 24px;
+  transition: margin-left 0.3s ease;
+}
+
+/* Header для мобільних */
+.mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 900;
+  padding: 0 20px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.mobile-header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1d1d1d;
+  margin: 0;
+}
+
+/* Logout button (desktop + mobile) */
+.desktop-logout-btn,
+.logout-menu-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 500;
+  background: none;
+  border: none;
+  color: #dc2626;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-align: left;
+}
+
+.desktop-logout-btn:hover,
+.logout-menu-btn:hover {
+  background: #fef2f2;
+}
