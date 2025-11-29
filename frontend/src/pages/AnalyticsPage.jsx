@@ -1,3 +1,4 @@
+// src/pages/AnalyticsPage.jsx
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -7,7 +8,7 @@ import {
   MenuItem,
   InputLabel,
   Paper,
-  useMediaQuery
+  useMediaQuery,
 } from "@mui/material";
 
 import axios from "../utils/axiosInstance";
@@ -29,19 +30,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// Colors for priorities
 const COLORS = {
   High: "#ff6b6b",
   Medium: "#f7c948",
   Low: "#51cf66",
 };
 
-// Convert seconds to "1h 23m 10s"
 const formatTime = (sec) => {
   const h = Math.floor(sec / 3600);
   const m = Math.floor((sec % 3600) / 60);
   const s = sec % 60;
-
   return `${h}h ${m}m ${s}s`;
 };
 
@@ -49,8 +47,7 @@ export default function AnalyticsPage() {
   const [tasks, setTasks] = useState([]);
   const [period, setPeriod] = useState("week");
 
-  // For mobile layout
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isNarrow = useMediaQuery("(max-width: 768px)");
 
   const loadTasks = async () => {
     try {
@@ -65,7 +62,6 @@ export default function AnalyticsPage() {
     loadTasks();
   }, []);
 
-  // Filter tasks by chosen period
   const filterByPeriod = () => {
     const now = new Date();
 
@@ -76,19 +72,15 @@ export default function AnalyticsPage() {
       switch (period) {
         case "day":
           return d.toDateString() === now.toDateString();
-
         case "week":
           return diff <= 7 * 24 * 60 * 60 * 1000;
-
         case "month":
           return (
             d.getMonth() === now.getMonth() &&
             d.getFullYear() === now.getFullYear()
           );
-
         case "year":
           return d.getFullYear() === now.getFullYear();
-
         default:
           return true;
       }
@@ -97,7 +89,6 @@ export default function AnalyticsPage() {
 
   const filtered = filterByPeriod();
 
-  // Calculate seconds by priority
   const timeByPriority = filtered.reduce(
     (acc, t) => {
       acc[t.priority] += t.spentTimeSeconds || 0;
@@ -122,8 +113,18 @@ export default function AnalyticsPage() {
   }));
 
   return (
-    <Box sx={{ maxWidth: 900, mx: "auto", mt: 4, px: 2 }}>
-      <Typography variant="h4" sx={{ mb: 3, textAlign: "center" }}>
+    <Box
+      sx={{
+        maxWidth: 980,
+        mx: "auto",
+        mt: 3,
+        px: { xs: 2, md: 0 },
+      }}
+    >
+      <Typography
+        variant="h4"
+        sx={{ mb: 3, textAlign: "center", fontWeight: 600 }}
+      >
         Analytics
       </Typography>
 
@@ -142,7 +143,7 @@ export default function AnalyticsPage() {
         </Select>
       </FormControl>
 
-      {/* SUMMARY BLOCK */}
+      {/* SUMMARY */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Typography variant="h6">
           Total Time: {formatTime(totalSeconds)}
@@ -158,9 +159,9 @@ export default function AnalyticsPage() {
         </Typography>
       </Paper>
 
-      {/* PIE CHART */}
-      <Typography variant="h6" sx={{ mt: 2 }}>
-        Time Distribution (%)
+      {/* PIE */}
+      <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>
+        Time Distribution
       </Typography>
       <ResponsiveContainer width="100%" height={280}>
         <PieChart>
@@ -174,18 +175,21 @@ export default function AnalyticsPage() {
         </PieChart>
       </ResponsiveContainer>
 
-      {/* ===== BOTTOM CHARTS (side-by-side or stacked) ===== */}
+      {/* BOTTOM CHARTS */}
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          gridTemplateColumns: isNarrow ? "1fr" : "1fr 1fr",
           gap: 3,
           mt: 4,
         }}
       >
-        {/* LEFT — BAR CHART */}
+        {/* BAR */}
         <Paper sx={{ p: 2 }}>
-          <Typography variant="h6" sx={{ mb: 1, textAlign: "center" }}>
+          <Typography
+            variant="h6"
+            sx={{ mb: 1, textAlign: "center" }}
+          >
             Time by Priority
           </Typography>
           <ResponsiveContainer width="100%" height={260}>
@@ -203,9 +207,12 @@ export default function AnalyticsPage() {
           </ResponsiveContainer>
         </Paper>
 
-        {/* RIGHT — LINE CHART */}
+        {/* LINE */}
         <Paper sx={{ p: 2 }}>
-          <Typography variant="h6" sx={{ mb: 1, textAlign: "center" }}>
+          <Typography
+            variant="h6"
+            sx={{ mb: 1, textAlign: "center" }}
+          >
             Time per Task
           </Typography>
           <ResponsiveContainer width="100%" height={260}>

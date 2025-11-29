@@ -1,37 +1,34 @@
-import React from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { Routes, Route } from "react-router-dom";
+
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+
+import CalendarPage from "./pages/CalendarPage";
+import TasksPage from "./pages/TasksPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+
+import AppLayout from "./components/layout/AppLayout";
 
 export default function App() {
-  const navigate = useNavigate();
-  const token = localStorage.getItem('token');
-
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
-
   return (
-    <>
-      {token && (
-        <AppBar position="static" sx={{ mb: 2 }}>
-          <Toolbar sx={{ display: "flex", gap: 2 }}>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              Focus Productivity App
-            </Typography>
+    <Routes>
+      {/* AUTH PAGES */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
 
-            <Button color="inherit" component={Link} to="/calendar">Calendar</Button>
-            <Button color="inherit" component={Link} to="/tasks">Tasks</Button>
-            <Button color="inherit" component={Link} to="/analytics">Analytics</Button>
-            <Button color="inherit" onClick={logout}>Logout</Button>
-          </Toolbar>
-        </AppBar>
-      )}
-
-      <main style={{ padding: 10 }}>
-        <Outlet />
-      </main>
-    </>
+      {/* MAIN AREA */}
+      <Route
+        path="/*"
+        element={
+          <AppLayout>
+            <Routes>
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="/tasks" element={<TasksPage />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+            </Routes>
+          </AppLayout>
+        }
+      />
+    </Routes>
   );
 }

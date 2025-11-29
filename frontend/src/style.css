@@ -1,202 +1,546 @@
-/* ===== RESET ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* ===========================
+   GLOBAL RESET (SAFE)
+   =========================== */
 
-/* ===== AUTH PAGE WRAPPER ===== */
-.auth-page {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #5465ff 0%, #788bff 100%);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-}
-
-/* ===== AUTH CARD ===== */
-.auth-container {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 450px;
-  box-shadow: 0 10px 30px rgba(84, 101, 255, 0.35);
-  animation: fadeIn 0.4s ease;
-  text-align: center;
-}
-
-/* ===== TITLE ===== */
-.auth-container h2 {
-  font-size: 30px;
-  margin-bottom: 28px;
-  font-weight: 700;
-  color: #313131;
-}
-
-/* ===== INPUT GROUP ===== */
-.form-group {
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 6px;
-  color: #333;
-}
-
-/* ===== INPUTS ===== */
-.auth-container input {
-  width: 100%;
-  padding: 14px;
-  border: 2px solid #cbd9ff;
-  border-radius: 10px;
-  background: #ffffff;
-  font-size: 15px;
-  transition: all 0.25s ease;
-}
-
-.auth-container input::placeholder {
-  color: #9aa3b1;
-}
-
-.auth-container input:focus {
-  outline: none;
-  border-color: #5465ff;
-  box-shadow: 0 0 0 4px rgba(84, 101, 255, 0.12);
-}
-
-/* ===== ERROR ===== */
-.error {
-  color: #ff4d4d;
-  font-weight: 700;
-  text-align: center;
-  font-size: 14px;
-  margin-bottom: 5px;
-  animation: fadeIn 0.2s ease;
-}
-
-/* ===== BUTTON ===== */
-.auth-container button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 10px;
-  background: linear-gradient(135deg, #5465ff 0%, #788bff 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.auth-container button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(84, 101, 255, 0.35);
-}
-
-.auth-container button:active {
-  transform: translateY(0px);
-}
-
-/* ===== LINKS ===== */
-.auth-container p {
-  margin-top: 18px;
-  font-size: 15px;
-  color: #444;
-}
-
-.auth-container a {
-  color: #5465ff;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.auth-container a:hover {
-  text-decoration: underline;
-}
-
-/* ===== ANIMATION ===== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
+   body {
+    margin: 0;
+    padding: 0;
+    background: #f5f7fa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  /* ВАЖЛИВО: НЕ ЧІПАТИ button, input, *, form — щоб не ламати MUI */
+  
+  /* ===========================
+     AUTH PAGES (LOGIN / SIGNUP)
+     =========================== */
+  
+  .auth-page {
+    min-height: 100vh;
+    background: #f5f7fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 22px;
   }
-}
-
-/* ===== TABLET ===== */
-@media (max-width: 768px) {
+  
   .auth-container {
-    padding: 32px 26px;
+    width: 100%;
+    max-width: 430px;
+    padding: 45px;
+    background: #ffffff;
+    border-radius: 22px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    text-align: center;
+    animation: fadeIn 0.4s ease;
   }
-
+  
   .auth-container h2 {
-    font-size: 28px;
-    margin-bottom: 24px;
+    font-size: 32px;
+    margin-bottom: 28px;
+    font-weight: 700;
+    color: #1d1d1d;
   }
-
+  
   .auth-container input {
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  .auth-container button {
-    padding: 12px;
+    width: 100%;
+    padding: 14px;
+    margin: 12px 0;
+    border-radius: 12px;
+    border: 1.5px solid #d3d9e3;
+    background: #f8f9fb;
     font-size: 15px;
+    transition: 0.2s ease;
+    box-sizing: border-box;
   }
-}
-
-/* ===== MOBILE ===== */
-@media (max-width: 480px) {
-  .auth-container {
-    padding: 28px 20px;
-    border-radius: 14px;
+  
+  .auth-container input:focus {
+    outline: none;
+    border-color: #4a83ff;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(74, 131, 255, 0.15);
   }
-
-  .auth-container h2 {
-    font-size: 24px;
-  }
-
-  .form-group {
-    margin-bottom: 16px;
-  }
-
-  .auth-container input {
-    padding: 11px;
-    font-size: 14px;
-  }
-
+  
   .auth-container button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 25px;
+    border: none;
+    border-radius: 12px;
+    background: #3b78ff;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-sizing: border-box;
+  }
+  
+  .auth-container button:hover {
+    background: #2d5fcc;
+  }
+  
+  .auth-container button:active {
+    transform: scale(0.98);
+  }
+  
+  .auth-container p {
+    margin-top: 18px;
+    font-size: 15px;
+    color: #444;
+  }
+  
+  .auth-container a {
+    color: #2d5fcc;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  .auth-container a:hover {
+    text-decoration: underline;
+  }
+  
+  .error {
+    color: #d62828;
+    font-weight: 700;
+    margin-top: 5px;
+    font-size: 15px;
+    animation: fadeIn 0.2s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* ===========================
+     OPTIONAL: light animations
+     =========================== */
+  
+  .fade-in {
+    animation: fadeIn 0.4s ease;
+  }
+  
+  /* ===========================
+     RESPONSIVE BREAKPOINTS
+     =========================== */
+  
+  /* Планшети (portrait) і малі екрани */
+  @media screen and (max-width: 768px) {
+    .auth-page {
+      padding: 16px;
+    }
+  
+    .auth-container {
+      max-width: 100%;
+      padding: 35px 28px;
+      border-radius: 18px;
+    }
+  
+    .auth-container h2 {
+      font-size: 28px;
+      margin-bottom: 24px;
+    }
+  
+    .auth-container input {
+      padding: 13px;
+      font-size: 16px; /* 16px запобігає zoom на iOS */
+      margin: 10px 0;
+    }
+  
+    .auth-container button {
+      padding: 14px;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+  
+    .auth-container p {
+      font-size: 14px;
+    }
+  
+    .error {
+      font-size: 14px;
+    }
+  
+    /* Показуємо бургер-меню */
+    .burger-menu {
+      display: flex;
+    }
+  
+    /* Ховаємо desktop navigation */
+    .desktop-nav {
+      display: none;
+    }
+  
+    /* Показуємо mobile header */
+    .mobile-header {
+      display: flex;
+    }
+  
+    /* Прибираємо margin від sidebar */
+    .main-content {
+      margin-left: 0;
+      padding: 84px 16px 16px; /* Додаємо padding-top для header */
+    }
+  }
+  
+  /* Мобільні телефони (portrait) */
+  @media screen and (max-width: 480px) {
+    .auth-page {
+      padding: 12px;
+    }
+  
+    .auth-container {
+      padding: 28px 22px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+  
+    .auth-container h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  
+    .auth-container input {
+      padding: 12px;
+      font-size: 16px;
+      margin: 8px 0;
+      border-radius: 10px;
+    }
+  
+    .auth-container button {
+      padding: 13px;
+      font-size: 16px;
+      margin-top: 18px;
+      border-radius: 10px;
+    }
+  
+    .auth-container p {
+      font-size: 13px;
+      margin-top: 16px;
+    }
+  
+    .error {
+      font-size: 13px;
+    }
+  
+    /* Burger menu меньше */
+    .burger-menu {
+      top: 14px;
+      right: 14px;
+      padding: 10px;
+    }
+  
+    .burger-icon {
+      width: 22px;
+      gap: 4px;
+    }
+  
+    /* Sidebar вужча */
+    .sidebar-nav {
+      width: 260px;
+    }
+  
+    /* Mobile header менший */
+    .mobile-header {
+      height: 56px;
+      padding: 0 16px;
+    }
+  
+    .mobile-header h1 {
+      font-size: 18px;
+    }
+  
+    /* Main content з меншим padding */
+    .main-content {
+      padding: 72px 12px 12px;
+    }
+  }
+  
+  /* Дуже малі екрани */
+  @media screen and (max-width: 360px) {
+    .auth-container {
+      padding: 24px 18px;
+    }
+  
+    .auth-container h2 {
+      font-size: 22px;
+    }
+  
+    .auth-container input,
+    .auth-container button {
+      font-size: 15px;
+    }
+  
+    /* Sidebar на весь екран */
+    .sidebar-nav {
+      width: 100%;
+    }
+  
+    /* Burger меню ще меньше */
+    .burger-menu {
+      top: 12px;
+      right: 12px;
+      padding: 8px;
+    }
+  
+    .burger-icon {
+      width: 20px;
+      gap: 3px;
+    }
+  
+    .burger-icon span {
+      height: 2.5px;
+    }
+  }
+  
+  /* Великі екрани (десктопи) */
+  @media screen and (min-width: 1200px) {
+    .auth-container {
+      max-width: 460px;
+      padding: 50px;
+    }
+  
+    .auth-container h2 {
+      font-size: 34px;
+    }
+  }
+  
+  /* Landscape орієнтація для мобільних */
+  @media screen and (max-height: 600px) and (orientation: landscape) {
+    .auth-page {
+      padding: 12px;
+    }
+  
+    .auth-container {
+      padding: 20px 28px;
+      margin: 10px 0;
+    }
+  
+    .auth-container h2 {
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+  
+    .auth-container input {
+      padding: 10px;
+      margin: 6px 0;
+    }
+  
+    .auth-container button {
+      padding: 11px;
+      margin-top: 14px;
+    }
+  }
+  
+  /* Touch device оптимізація */
+  @media (hover: none) and (pointer: coarse) {
+    .auth-container button {
+      min-height: 44px; /* Apple Human Interface Guidelines */
+    }
+  
+    .auth-container input {
+      min-height: 44px;
+    }
+  }
+  
+  /* ===========================
+     BURGER MENU (для мобільних)
+     =========================== */
+  
+  .burger-menu {
+    display: none;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: #ffffff;
+    border: none;
+    border-radius: 12px;
     padding: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: 0.3s ease;
   }
-}
-
-/* ===== VERY SMALL MOBILES ===== */
-@media (max-width: 360px) {
-  .auth-container {
-    padding: 22px 18px;
+  
+  .burger-menu:hover {
+    background: #f8f9fb;
+    transform: scale(1.05);
   }
-
-  .auth-container input,
-  .auth-container button {
-    font-size: 13px;
+  
+  .burger-menu:active {
+    transform: scale(0.95);
   }
-}
-
-/* ===== TOUCH SCREENS ===== */
-@media (hover: none) and (pointer: coarse) {
-  .auth-container input,
-  .auth-container button {
-    min-height: 46px;
+  
+  .burger-icon {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 24px;
   }
-}
+  
+  .burger-icon span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background: #3b78ff;
+    border-radius: 2px;
+    transition: 0.3s ease;
+  }
+  
+  .burger-menu.active .burger-icon span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+  }
+  
+  .burger-menu.active .burger-icon span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .burger-menu.active .burger-icon span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
+  
+  /* Sidebar Navigation */
+  .sidebar-nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: #ffffff;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    padding: 80px 24px 24px;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+  }
+  
+  .sidebar-nav.active {
+    right: 0;
+  }
+  
+  .sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar-nav li {
+    margin-bottom: 8px;
+  }
+  
+  .sidebar-nav a {
+    display: block;
+    padding: 14px 18px;
+    color: #1d1d1d;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.2s ease;
+  }
+  
+  .sidebar-nav a:hover,
+  .sidebar-nav a.active {
+    background: #f0f4ff;
+    color: #3b78ff;
+  }
+  
+  /* Overlay для sidebar */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+  }
+  
+  /* ===========================
+     MAIN APP LAYOUT
+     =========================== */
+  
+  .app-container {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  .desktop-nav {
+    width: 260px;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 24px 16px;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .desktop-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .desktop-nav li {
+    margin-bottom: 6px;
+  }
+  
+  .desktop-nav a {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: #4b5563;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: 0.2s ease;
+  }
+  
+  .desktop-nav a:hover,
+  .desktop-nav a.active {
+    background: #f0f4ff;
+    color: #3b78ff;
+  }
+  
+  .main-content {
+    flex: 1;
+    margin-left: 260px;
+    padding: 24px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  /* Header для мобільних */
+  .mobile-header {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    z-index: 900;
+    padding: 0 20px;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .mobile-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1d1d1d;
+    margin: 0;
+  }

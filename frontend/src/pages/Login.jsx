@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import "../style.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -14,14 +13,21 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
+    if (!email || !password) {
+      setError("Please enter email and password");
+      return;
+    }
+
     try {
-      const res = await axiosInstance.post("/api/auth/login", {
+      const response = await axiosInstance.post("/api/auth/login", {
         email,
         password,
       });
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      const { token, user } = response.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       navigate("/calendar");
     } catch (err) {
@@ -58,6 +64,6 @@ export default function Login() {
           </p>
         </form>
       </div>
-      </div>
+    </div>
   );
 }

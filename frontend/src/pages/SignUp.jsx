@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-import "../style.css";
 
 export default function SignUp() {
   const [fullName, setFullName] = useState("");
@@ -15,15 +14,22 @@ export default function SignUp() {
     e.preventDefault();
     setError("");
 
+    if (!fullName || !email || !password) {
+      setError("All fields are required");
+      return;
+    }
+
     try {
-      const res = await axiosInstance.post("/api/auth/register", {
+      const response = await axiosInstance.post("/api/auth/register", {
         fullName,
         email,
         password,
       });
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      const { token, user } = response.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       navigate("/calendar");
     } catch (err) {
@@ -39,7 +45,7 @@ export default function SignUp() {
         <form onSubmit={handleSignUp}>
           <input
             type="text"
-            placeholder="Full Name"
+            placeholder="Full name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
