@@ -58,7 +58,11 @@ export default function BurgerMenu() {
             <li key={item.to}>
               <Link
                 to={item.to}
-                className={location.pathname === item.to ? "active" : ""}
+                className={
+                  location.pathname === item.to
+                    ? "nav-link active"
+                    : "nav-link"
+                }
               >
                 <span className="icon">{item.icon}</span>
                 {item.label}
@@ -67,7 +71,10 @@ export default function BurgerMenu() {
           ))}
 
           <li>
-            <button className="logout-btn" onClick={handleLogout}>
+            <button
+              className="nav-link logout-btn"
+              onClick={handleLogout}
+            >
               <span className="icon">🚪</span> Вийти
             </button>
           </li>

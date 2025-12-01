@@ -1,4 +1,3 @@
-// src/components/layout/AppLayout.jsx
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import BurgerMenu from "../BurgerMenu";
@@ -45,7 +44,11 @@ export default function AppLayout({ children }) {
             <li key={item.path}>
               <Link
                 to={item.path}
-                className={location.pathname === item.path ? "active" : ""}
+                className={
+                  location.pathname === item.path
+                    ? "nav-link active"
+                    : "nav-link"
+                }
               >
                 <span style={{ marginRight: "12px", fontSize: "18px" }}>
                   {item.icon}
@@ -63,7 +66,10 @@ export default function AppLayout({ children }) {
               borderTop: "1px solid #e5e7eb",
             }}
           >
-            <button className="desktop-logout-btn" onClick={handleLogout}>
+            <button
+              className="nav-link desktop-logout-btn"
+              onClick={handleLogout}
+            >
               <span style={{ marginRight: "12px", fontSize: "18px" }}>🚪</span>
               Вийти
             </button>

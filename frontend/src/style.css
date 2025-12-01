@@ -425,3 +425,47 @@
     cursor: pointer;
   }
   
+  /* Базовий стиль для пунктів меню (посилання + кнопки) */
+.nav-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  color: #374151;           /* звичайний текст */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Ховер + active для звичайних пунктів (синій) */
+.nav-link:hover,
+.nav-link.active {
+  background-color: #eff6ff;
+  color: #2563eb;           /* синій */
+}
+
+/* --- ЛОГАУТ --- */
+
+/* робимо червоний текст за замовчуванням */
+.desktop-logout-btn,
+.logout-btn {
+  color: #b91c1c; /* червоний */
+}
+
+/* на ховері – червоне підсвічування замість синього */
+.desktop-logout-btn:hover,
+.logout-btn:hover {
+  background-color: #fee2e2; /* світло-червоний фон */
+  color: #b91c1c;
+}
+
+/* не даємо загальному .nav-link:hover перезаписати стилі логауту */
+.desktop-logout-btn:hover,
+.logout-btn:hover {
+  /* вищий пріоритет, тому що селектор конкретніший */
+}
