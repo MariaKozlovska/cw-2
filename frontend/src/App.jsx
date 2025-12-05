@@ -5,7 +5,6 @@ import SignUp from "./pages/SignUp";
 import CalendarPage from "./pages/CalendarPage";
 import TasksPage from "./pages/TasksPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
-import Profile from "./pages/ProfilePage";
 
 import AppLayout from "./components/layout/AppLayout";
 
