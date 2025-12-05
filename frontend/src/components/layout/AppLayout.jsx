@@ -16,7 +16,6 @@ export default function AppLayout({ children }) {
     { path: "/tasks", label: "Завдання", icon: "📋" },
     { path: "/calendar", label: "Календар", icon: "📅" },
     { path: "/analytics", label: "Аналітика", icon: "📊" },
-    { path: "/profile", label: "Профіль", icon: "👤" },
   ];
 
   return (

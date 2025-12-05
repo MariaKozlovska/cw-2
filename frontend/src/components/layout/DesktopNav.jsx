@@ -6,7 +6,6 @@ const navItems = [
   { path: "/calendar", label: "Календар", icon: "calendar" },
   { path: "/tasks", label: "Завдання", icon: "list-check" },
   { path: "/analytics", label: "Аналітика", icon: "chart-bar" },
-  { path: "/profile", label: "Профіль", icon: "user" },
 ];
 
 export default function DesktopNav() {

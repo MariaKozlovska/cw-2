@@ -11,7 +11,6 @@ export default function BurgerMenu() {
     { to: "/tasks", label: "Завдання", icon: "📋" },
     { to: "/calendar", label: "Календар", icon: "📅" },
     { to: "/analytics", label: "Аналітика", icon: "📊" },
-    { to: "/profile", label: "Профіль", icon: "👤" },
   ];
 
   const handleLogout = () => {

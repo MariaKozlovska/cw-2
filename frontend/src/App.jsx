@@ -23,7 +23,6 @@ export default function App() {
               <Route path="calendar" element={<CalendarPage />} />
               <Route path="tasks" element={<TasksPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
-              <Route path="profile" element={<Profile />} />
             </Routes>
           </AppLayout>
         }
