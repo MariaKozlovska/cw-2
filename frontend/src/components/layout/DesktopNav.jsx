@@ -1,4 +1,3 @@
-// src/components/layout/DesktopNav.jsx
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 

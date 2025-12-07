@@ -30,8 +30,17 @@ export default function Login() {
       localStorage.setItem("user", JSON.stringify(user));
 
       navigate("/calendar");
+
     } catch (err) {
-      setError(err?.response?.data?.message || "Login failed");
+      const msg = err?.response?.data?.message;
+
+      if (msg === "User not found") {
+        setError("User with this email does not exist");
+      } else if (msg === "Wrong password") {
+        setError("Incorrect password");
+      } else {
+        setError("Login failed");
+      }
     }
   };
 

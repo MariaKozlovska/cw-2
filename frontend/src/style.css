@@ -38,6 +38,7 @@
   .auth-container h2 {
     font-size: 32px;
     margin-bottom: 28px;
+    margin-top: 10px;
     font-weight: 700;
     color: #1d1d1d;
   }
@@ -86,7 +87,7 @@
   
   .auth-container p {
     margin-top: 18px;
-    font-size: 15px;
+    font-size: 17px;
     color: #444;
   }
   
