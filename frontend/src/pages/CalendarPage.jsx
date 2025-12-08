@@ -24,7 +24,7 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [editingTask, setEditingTask] = useState(null);
 
-  // 🔹 Завантаження всіх тасок для користувача
+  // 🔹 Load tasks
   const loadTasks = async () => {
     try {
       const res = await axios.get(API_PATHS.TASKS.BASE);
@@ -37,10 +37,9 @@ export default function CalendarPage() {
   useEffect(() => {
     loadTasks();
     generateMatrix();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate]);
 
-  // 🔹 Генерація сітки календаря
+  // 🔹 Generate calendar matrix
   const generateMatrix = () => {
     let start = startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 });
     let end = endOfMonth(currentDate);
@@ -59,7 +58,7 @@ export default function CalendarPage() {
     setMatrix(weeks);
   };
 
-  // 🔹 Фільтр тасок на конкретну дату (date: 'YYYY-MM-DD')
+  // 🔹 Filter tasks for a specific calendar day
   const tasksForDate = (day) => {
     const d = format(day, "yyyy-MM-dd");
     return tasks.filter((t) => t.date === d);
@@ -89,7 +88,7 @@ export default function CalendarPage() {
 
       {/* CALENDAR GRID */}
       <Paper sx={{ p: 2 }}>
-        {/* Назви днів тижня */}
+        {/* Week day names */}
         <Box
           sx={{
             display: "grid",
@@ -104,7 +103,7 @@ export default function CalendarPage() {
           ))}
         </Box>
 
-        {/* Сам календар */}
+        {/* Calendar body */}
         {matrix.map((week, wi) => (
           <Box
             key={wi}
@@ -135,17 +134,17 @@ export default function CalendarPage() {
                     {format(day, "d")}
                   </Typography>
 
-                  {/* Таски у клітинці */}
+                  {/* Tasks inside day cell */}
                   {dayTasks.map((t) => (
                     <Box
-                      key={t.id} // 🔴 важливо: id, НЕ _id
+                      key={t.id}
                       sx={{
-                        bgcolor:
+                        backgroundColor:
                           t.status === "Completed"
-                            ? "#d8ffd8"
+                            ? "#d7f8d7"
                             : t.status === "In Progress"
-                            ? "#ffe9b3"
-                            : "#ffcccc",
+                            ? "#e0edff"
+                            : "#fff6cc",
                         borderRadius: 1,
                         px: 0.5,
                         py: 0.2,
@@ -172,7 +171,7 @@ export default function CalendarPage() {
         ))}
       </Paper>
 
-      {/* Модалка додати/редагувати */}
+      {/* MODAL */}
       <TaskModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}

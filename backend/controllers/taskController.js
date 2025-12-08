@@ -29,11 +29,10 @@ exports.createTask = async (req, res) => {
       deadline,
       priority,
       status,
-      stages,
       expectedTimeHours,
       expectedTimeMinutes,
       expectedTimeDecimal,
-      spentTimeSeconds = 0    // ← додаємо підтримку
+      spentTimeSeconds = 0,
     } = req.body;
 
     if (!title || !date || !deadline)
@@ -43,7 +42,9 @@ exports.createTask = async (req, res) => {
 
     const result = await db.runAsync(
       `INSERT INTO tasks 
-      (userId, title, description, date, deadline, priority, status, expectedTimeHours, expectedTimeMinutes, expectedTimeDecimal, spentTimeSeconds, createdAt, updatedAt)
+      (userId, title, description, date, deadline, priority, status,
+       expectedTimeHours, expectedTimeMinutes, expectedTimeDecimal,
+       spentTimeSeconds, createdAt, updatedAt)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         req.user.id,
@@ -56,9 +57,9 @@ exports.createTask = async (req, res) => {
         expectedTimeHours || 0,
         expectedTimeMinutes || 0,
         expectedTimeDecimal || 0,
-        spentTimeSeconds || 0,     // ← записуємо в БД
+        spentTimeSeconds || 0,
         now,
-        now
+        now,
       ]
     );
 
@@ -68,7 +69,6 @@ exports.createTask = async (req, res) => {
     );
 
     res.json(task);
-
   } catch (err) {
     console.error("CREATE TASK ERROR:", err);
     res.status(500).json({ message: "Server error" });
@@ -95,7 +95,7 @@ exports.updateTask = async (req, res) => {
         expectedTimeHours = ?, 
         expectedTimeMinutes = ?, 
         expectedTimeDecimal = ?,
-        spentTimeSeconds = ?,     -- ← додаємо update
+        spentTimeSeconds = ?, 
         updatedAt = ?
       WHERE id = ? AND userId = ?`,
       [
@@ -108,10 +108,10 @@ exports.updateTask = async (req, res) => {
         updates.expectedTimeHours,
         updates.expectedTimeMinutes,
         updates.expectedTimeDecimal,
-        updates.spentTimeSeconds || 0,  // ← зберігаємо час
+        updates.spentTimeSeconds || 0,
         now,
         id,
-        req.user.id
+        req.user.id,
       ]
     );
 
@@ -121,7 +121,6 @@ exports.updateTask = async (req, res) => {
     );
 
     res.json(task);
-
   } catch (err) {
     console.error("UPDATE TASK ERROR:", err);
     res.status(500).json({ message: "Server error" });
@@ -147,7 +146,6 @@ exports.deleteTask = async (req, res) => {
 
 /* ================================
    ANALYTICS
-   (тепер показує totalSpentSeconds)
 ================================ */
 exports.analytics = async (req, res) => {
   try {
@@ -158,28 +156,25 @@ exports.analytics = async (req, res) => {
 
     const stats = {
       total: tasks.length,
-      totalSpentSeconds: 0,     // ← загальний витрачений час
+      totalSpentSeconds: 0,
       byStatus: { Pending: 0, "In Progress": 0, Completed: 0 },
       byPriority: {
         Low: { count: 0, time: 0 },
         Medium: { count: 0, time: 0 },
-        High: { count: 0, time: 0 }
-      }
+        High: { count: 0, time: 0 },
+      },
     };
 
     tasks.forEach((t) => {
-      // Лічильники
       stats.byStatus[t.status]++;
       stats.byPriority[t.priority].count++;
 
-      // Час
       const sec = t.spentTimeSeconds || 0;
       stats.totalSpentSeconds += sec;
       stats.byPriority[t.priority].time += sec;
     });
 
     res.json(stats);
-
   } catch (err) {
     console.error("ANALYTICS ERROR:", err);
     res.status(500).json({ message: "Server error" });

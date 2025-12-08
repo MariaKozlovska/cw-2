@@ -13,9 +13,9 @@ export default function AppLayout({ children }) {
   };
 
   const navigationItems = [
-    { path: "/tasks", label: "Завдання", icon: "📋" },
-    { path: "/calendar", label: "Календар", icon: "📅" },
-    { path: "/analytics", label: "Аналітика", icon: "📊" },
+    { path: "/tasks", label: "Tasks", icon: "📋" },
+    { path: "/calendar", label: "Calendar", icon: "📅" },
+    { path: "/analytics", label: "Analytics", icon: "📊" },
   ];
 
   return (
@@ -34,7 +34,7 @@ export default function AppLayout({ children }) {
             FocusApp
           </h2>
           <p style={{ fontSize: "13px", color: "#6b7280", margin: 0 }}>
-            Керуй своїм часом
+            Manage your time
           </p>
         </div>
 
@@ -70,7 +70,7 @@ export default function AppLayout({ children }) {
               onClick={handleLogout}
             >
               <span style={{ marginRight: "12px", fontSize: "18px" }}>🚪</span>
-              Вийти
+              Log Out
             </button>
           </li>
         </ul>

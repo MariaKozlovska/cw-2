@@ -7,9 +7,9 @@ export default function BurgerMenu() {
   const location = useLocation();
 
   const navItems = [
-    { to: "/tasks", label: "Завдання", icon: "📋" },
-    { to: "/calendar", label: "Календар", icon: "📅" },
-    { to: "/analytics", label: "Аналітика", icon: "📊" },
+    { to: "/tasks", label: "Tasks", icon: "📋" },
+    { to: "/calendar", label: "Calendar", icon: "📅" },
+    { to: "/analytics", label: "Analytics", icon: "📊" },
   ];
 
   const handleLogout = () => {
@@ -73,7 +73,7 @@ export default function BurgerMenu() {
               className="nav-link logout-btn"
               onClick={handleLogout}
             >
-              <span className="icon">🚪</span> Вийти
+              <span className="icon">🚪</span> Log Out
             </button>
           </li>
         </ul>

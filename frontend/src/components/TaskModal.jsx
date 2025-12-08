@@ -140,7 +140,7 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
       <DialogTitle>{editingTask ? "Edit Task" : "Create Task"}</DialogTitle>
 
       <DialogContent>
-        {err && <Typography color="error">{err}</Typography>}
+      {err && <div className="modal-error">{err}</div>}
 
         <TextField fullWidth label="Title" margin="normal"
           value={title} onChange={(e) => setTitle(e.target.value)} />

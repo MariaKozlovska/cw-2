@@ -17,7 +17,7 @@
   
   .auth-page {
     min-height: 100vh;
-    background: #f5f7fa;
+    background: #C1C7D9;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -102,13 +102,32 @@
   }
   
   .error {
-    color: #d62828;
+    color: #d62828 !important;
     font-weight: 700;
-    margin-top: 5px;
+    margin: 10px 0 5px;
+    padding: 10px 14px;
     font-size: 15px;
-    animation: fadeIn 0.2s ease;
+    background: #ffe5e5;
+    border-radius: 6px;
+    animation: fadeIn 0.25s ease;
   }
   
+/* ===========================
+   MODAL ERROR MESSAGE
+   =========================== */
+
+   .modal-error {
+    color: #d62828 !important;
+    font-weight: 700;
+    margin: 10px 0 5px;
+    padding: 10px 14px;
+    font-size: 15px;
+    background: #ffe5e5;
+    border-radius: 6px;
+    animation: fadeIn 0.25s ease;
+  }
+  
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
