@@ -17,7 +17,6 @@ db.runAsync = (sql, params = []) =>
     });
   });
 
-// Helper: get single row
 db.getAsync = (sql, params = []) =>
   new Promise((resolve, reject) => {
     db.get(sql, params, function (err, row) {
@@ -26,7 +25,6 @@ db.getAsync = (sql, params = []) =>
     });
   });
 
-// Helper: get multiple rows
 db.allAsync = (sql, params = []) =>
   new Promise((resolve, reject) => {
     db.all(sql, params, function (err, rows) {
