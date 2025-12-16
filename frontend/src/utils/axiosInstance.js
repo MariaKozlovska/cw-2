@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// Якщо треба — зміни порт 8000 на свій
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
 
 const instance = axios.create({

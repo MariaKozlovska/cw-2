@@ -39,7 +39,7 @@ export default function CalendarPage() {
     generateMatrix();
   }, [currentDate]);
 
-  // 🔹 Generate calendar matrix
+  // Generate calendar matrix
   const generateMatrix = () => {
     let start = startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 });
     let end = endOfMonth(currentDate);
@@ -58,7 +58,7 @@ export default function CalendarPage() {
     setMatrix(weeks);
   };
 
-  // 🔹 Filter tasks for a specific calendar day
+  // Filter tasks for a specific calendar day
   const tasksForDate = (day) => {
     const d = format(day, "yyyy-MM-dd");
     return tasks.filter((t) => t.date === d);

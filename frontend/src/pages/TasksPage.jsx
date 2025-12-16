@@ -36,9 +36,6 @@ export default function TasksPage() {
     loadTasks();
   }, []);
 
-  // ------------------------------
-  // 🔹 Місячні фільтри
-  // ------------------------------
   const filterByMonth = (task) => {
     if (!task.deadline) return false;
 
@@ -69,9 +66,6 @@ export default function TasksPage() {
     return true;
   };
 
-  // ------------------------------
-  // 🔹 Сортування
-  // ------------------------------
   const sortedTasks = [...tasks]
     .filter(filterByMonth)
     .sort((a, b) => {
@@ -89,9 +83,6 @@ export default function TasksPage() {
       return 0;
     });
 
-  // ------------------------------
-  // 🔹 Оновлення статусу
-  // ------------------------------
   const updateStatus = async (task, newStatus) => {
     try {
       await axios.put(`${API_PATHS.TASKS.BASE}/${task.id}`, {
@@ -104,9 +95,6 @@ export default function TasksPage() {
     }
   };
 
-  // ------------------------------
-  // 🔹 Видалення
-  // ------------------------------
   const deleteTask = async (taskId) => {
     try {
       await axios.delete(`${API_PATHS.TASKS.BASE}/${taskId}`);
@@ -116,9 +104,6 @@ export default function TasksPage() {
     }
   };
 
-  // ------------------------------
-  // 🔹 Кольори статусів
-  // ------------------------------
   const statusColor = (s) =>
     s === "Pending"
       ? "#fff6cc"

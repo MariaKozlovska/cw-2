@@ -1,4 +1,3 @@
-// src/pages/AnalyticsPage.jsx
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -103,7 +102,7 @@ export default function AnalyticsPage() {
   const totalSeconds =
     timeByPriority.High + timeByPriority.Medium + timeByPriority.Low;
 
-  // NEW ➜ PieChart uses PERCENTAGES instead of seconds
+  // PieChart uses PERCENTAGES instead of seconds
   const pieData = Object.keys(timeByPriority).map((key) => ({
     name: key,
     seconds: timeByPriority[key], // needed for tooltip

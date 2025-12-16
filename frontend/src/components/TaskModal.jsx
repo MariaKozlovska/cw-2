@@ -109,7 +109,7 @@ export default function TaskModal({ open, onClose, onSaved, editingTask, date })
       expectedTimeHours: h,
       expectedTimeMinutes: m,
       expectedTimeDecimal: h + m / 60,
-      spentTimeSeconds, // 🔥 SEND TIMER DATA
+      spentTimeSeconds,
     };
 
     try {

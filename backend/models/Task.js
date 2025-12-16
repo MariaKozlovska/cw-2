@@ -23,7 +23,6 @@ const taskSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Дедлайн
     deadline: {
       type: String,
       required: true,

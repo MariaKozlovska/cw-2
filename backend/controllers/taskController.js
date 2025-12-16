@@ -1,8 +1,5 @@
 const db = require("../db");
 
-/* ================================
-   GET ALL TASKS
-================================ */
 exports.getTasks = async (req, res) => {
   try {
     const tasks = await db.allAsync(
@@ -17,9 +14,6 @@ exports.getTasks = async (req, res) => {
   }
 };
 
-/* ================================
-   CREATE TASK
-================================ */
 exports.createTask = async (req, res) => {
   try {
     const {
@@ -75,9 +69,6 @@ exports.createTask = async (req, res) => {
   }
 };
 
-/* ================================
-   UPDATE TASK
-================================ */
 exports.updateTask = async (req, res) => {
   try {
     const id = req.params.id;
@@ -127,9 +118,6 @@ exports.updateTask = async (req, res) => {
   }
 };
 
-/* ================================
-   DELETE TASK
-================================ */
 exports.deleteTask = async (req, res) => {
   try {
     await db.runAsync(
@@ -144,9 +132,6 @@ exports.deleteTask = async (req, res) => {
   }
 };
 
-/* ================================
-   ANALYTICS
-================================ */
 exports.analytics = async (req, res) => {
   try {
     const tasks = await db.allAsync(

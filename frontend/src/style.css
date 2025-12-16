@@ -1,7 +1,3 @@
-/* ===========================
-   GLOBAL RESET (SAFE)
-   =========================== */
-
    body {
     margin: 0;
     padding: 0;
@@ -11,9 +7,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
   
-  /* ===========================
-     AUTH PAGES (LOGIN / SIGNUP)
-     =========================== */
+  /* AUTH PAGES (LOGIN / SIGNUP) */
   
   .auth-page {
     min-height: 100vh;
@@ -112,9 +106,7 @@
     animation: fadeIn 0.25s ease;
   }
   
-/* ===========================
-   MODAL ERROR MESSAGE
-   =========================== */
+/* MODAL ERROR MESSAGE */
 
    .modal-error {
     color: #d62828 !important;
@@ -133,17 +125,13 @@
     to { opacity: 1; transform: translateY(0); }
   }
   
-  /* ===========================
-     OPTIONAL: light animations
-     =========================== */
+  /* OPTIONAL: light animations */
   
   .fade-in {
     animation: fadeIn 0.4s ease;
   }
   
-  /* ===========================
-     MAIN APP LAYOUT
-     =========================== */
+  /* MAIN APP LAYOUT */
   
   .app-container {
     display: flex;
@@ -195,9 +183,7 @@
     transition: margin-left 0.3s ease;
   }
   
-  /* ===========================
-     HEADER (MOBILE)
-     =========================== */
+  /* HEADER (MOBILE) */
   
   .mobile-header {
     display: none;
@@ -222,9 +208,7 @@
     margin: 0;
   }
   
-  /* ===========================
-     BURGER MENU (NEW WORKING VERSION)
-     =========================== */
+  /* BURGER MENU (NEW WORKING VERSION) */
   
   /* Кнопка-бургер */
   .burger-btn {
@@ -248,7 +232,7 @@
     transition: 0.3s;
   }
   
-  /* Анімація: 3 полоски → хрестик */
+  /* Анімація: 3 полоски змінюються на хрестик */
   .burger-btn.open span:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
   }
@@ -319,8 +303,6 @@
     font-weight: 600;
   }
 
-  
-  
   .icon {
     width: 28px;
     margin-right: 10px;
@@ -346,9 +328,7 @@
     opacity: 1;
   }
   
-  /* ===========================
-     RESPONSIVE LOGIC
-     =========================== */
+  /* RESPONSIVE LOGIC */
   
   /* Мобільні екрани */
   @media (max-width: 768px) {
@@ -377,9 +357,7 @@
     }
   }
   
-  /* ===========================
-     PROFILE PAGE
-     =========================== */
+  /* PROFILE PAGE */
   
   .profile-page {
     max-width: 480px;
@@ -458,7 +436,7 @@
   background: transparent;
   cursor: pointer;
   text-decoration: none;
-  color: #374151;           /* звичайний текст */
+  color: #374151;   
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -466,21 +444,20 @@
 .nav-link:hover,
 .nav-link.active {
   background-color: #eff6ff;
-  color: #2563eb;           /* синій */
+  color: #2563eb;        
 }
 
-/* --- ЛОГАУТ --- */
+/* --- Log Out --- */
 
-/* робимо червоний текст за замовчуванням */
 .desktop-logout-btn,
 .logout-btn {
   color: #b91c1c; /* червоний */
 }
 
-/* на ховері – червоне підсвічування замість синього */
+/* на ховері – червоне підсвічування */
 .desktop-logout-btn:hover,
 .logout-btn:hover {
-  background-color: #fee2e2; /* світло-червоний фон */
+  background-color: #fee2e2;
   color: #b91c1c;
 }
 
